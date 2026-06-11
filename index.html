@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>⚔️ Sabotage Time MTPQI</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
+      color: #F5F1E8; 
+      font-family: Georgia, serif; 
+      padding: 15px;
+      min-height: 100vh;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+    h1 { color: #D4AF37; text-align: center; font-size: 2.5em; margin: 20px 0; }
+    
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 2px solid #D4AF37;
+      background: rgba(0,0,0,0.7);
+      color: #F5F1E8;
+      border-radius: 8px;
+      font-size: 1em;
+      font-family: Georgia, serif;
+    }
+    
+    button {
+      cursor: pointer;
+      font-weight: bold;
+      border: none;
+      transition: all 0.3s;
+    }
+    
+    .btn-gold { background: #D4AF37; color: #000; }
+    .btn-gold:hover { background: #F5F1E8; transform: scale(1.02); }
+    .btn-danger { background: #8B0000; color: #fff; }
+    .btn-danger:hover { background: #A00000; }
+    .btn-danger:disabled { background: #4a4a4a; cursor: not-allowed; opacity: 0.5; }
+    
+    .tela { display: none; }
+    .tela.ativo { display: block; }
+    
+    .form-login {
+      background: rgba(45,45,45,0.95);
+      border: 3px solid #D4AF37;
+      padding: 40px;
+      border-radius: 10px;
+      max-width: 500px;
+      margin: 50px auto;
+    }
+    
+    .form-login h2 {
+      color: #D4AF37;
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 1.8em;
+    }
+    
+    .questao-box {
+      background: rgba(212,175,55,0.15);
+      border: 3px solid #D4AF37;
+      padding: 25px;
+      border-radius: 10px;
+      margin: 20px 0;
+    }
+    
+    .questao-titulo {
+      font-size: 1.3em;
+      color: #D4AF37;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    
+    .status-bar {
+      background: rgba(212,175,55,0.2);
+      padding: 15px;
+      border-radius: 8px;
+      margin: 15px 0;
+      text-align: center;
+      color: #D4AF37;
+      font-weight: bold;
+    }
+    
+    .timer {
+      font-size: 3em;
+      color: #D4AF37;
+      text-align: center;
+      font-weight: bold;
+      margin: 15px 0;
+    }
+    
+    .timer.aviso { color: #FF6B6B; animation: pulse 0.5s infinite; }
+    
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    
+    .opcoes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 20px 0;
+    }
+    
+    .opcao {
+      background: rgba(212,175,55,0.2);
+      border: 3px solid #D4AF37;
+      padding: 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.05em;
+      color: #F5F1E8;
+      transition: all 0.2s;
+      text-align: center;
+      font-weight: bold;
+    }
+    
+    .opcao:hover { background: #D4AF37; color: #000; transform: scale(1.05); }
+    .opcao.desabilitada { opacity: 0.3; cursor: not-allowed; }
+    
+    .mecanicas {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 20px 0;
+    }
+    
+    .mecanica {
+      background: rgba(212,175,55,0.15);
+      border: 2px solid #D4AF37;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    
+    .mecanica button { margin: 5px 0; font-size: 0.9em; padding: 8px; }
+    .mecanica p { color: #D4AF37; font-weight: bold; margin: 5px 0; }
+    
+    .resultado {
+      font-size: 1.3em;
+      padding: 20px;
+      text-align: center;
+      margin: 15px 0;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+    
+    .resultado.acerto {
+      background: rgba(74, 125, 36, 0.4);
+      color: #7FFF00;
+      border: 2px solid #4a7d24;
+    }
+    
+    .resultado.erro {
+      background: rgba(139, 0, 0, 0.4);
+      color: #FF6B6B;
+      border: 2px solid #8B0000;
+    }
+    
+    .resultado.sabotado {
+      background: rgba(255, 107, 107, 0.4);
+      color: #FFD700;
+      border: 2px solid #FF6B6B;
+    }
+    
+    .final {
+      background: rgba(212,175,55,0.2);
+      border: 3px solid #D4AF37;
+      padding: 40px;
+      border-radius: 10px;
+      text-align: center;
+      max-width: 500px;
+      margin: 50px auto;
+    }
+    
+    .final h2 { color: #D4AF37; font-size: 2.2em; margin: 20px 0; }
+    .final p { font-size: 1.2em; margin: 15px 0; color: #F5F1E8; }
+    .final .nota { color: #D4AF37; font-size: 2em; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>⚔️ SABOTAGE TIME</h1>
+  
+  <!-- TELA LOGIN -->
+  <div class="tela ativo" id="telaLogin">
+    <div class="form-login">
+      <h2>Bem-vindo ao Desafio!</h2>
+      <input type="text" id="nome" placeholder="Nome completo" required>
+      <input type="text" id="ra" placeholder="RA (Matrícula)" required>
+      <select id="programa" required>
+        <option value="">-- Selecione seu Programa --</option>
+        <option value="PPGA Mestrado">PPGA Mestrado</option>
+        <option value="PPGA Doutorado">PPGA Doutorado</option>
+        <option value="PPGP Mestrado">PPGP Mestrado</option>
+        <option value="PPGP Doutorado">PPGP Doutorado</option>
+        <option value="Outro">Outro</option>
+      </select>
+      <button class="btn btn-gold" onclick="iniciarJogo()">🎮 COMEÇAR</button>
+    </div>
+  </div>
+  
+  <!-- TELA JOGO -->
+  <div class="tela" id="telaJogo">
+    <div class="status-bar" id="statusQuestao"></div>
+    
+    <div class="timer" id="timer">60</div>
+    
+    <div class="questao-box">
+      <div class="questao-titulo" id="questaoTexto"></div>
+      <div class="opcoes" id="opcoes"></div>
+    </div>
+    
+    <div id="resultadoArea"></div>
+    
+    <div class="mecanicas">
+      <div class="mecanica">
+        <button class="btn btn-danger" id="btnPular" onclick="pular()">PULAR</button>
+        <p id="contPular">3</p>
+      </div>
+      <div class="mecanica">
+        <button class="btn btn-danger" id="btnEliminar" onclick="eliminar()">ELIMINAR 2</button>
+        <p id="contEliminar">3</p>
+      </div>
+      <div class="mecanica">
+        <button class="btn btn-danger" id="btnAjuda" onclick="ajuda()">AJUDA 🎲</button>
+        <p id="contAjuda">3</p>
+      </div>
+    </div>
+    
+    <button class="btn btn-gold" id="btnProximo" onclick="proximaQuestao()" style="display: none;">PRÓXIMA ➜</button>
+  </div>
+  
+  <!-- TELA FINAL -->
+  <div class="tela" id="telaFinal">
+    <div class="final">
+      <h2>🎉 JOGO FINALIZADO!</h2>
+      <p>Obrigado por participar!</p>
+      <p id="statusFinal"></p>
+      <p class="nota" id="textofinal"></p>
+      <button class="btn btn-gold" onclick="location.reload()">VOLTAR AO INÍCIO</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbxCn3G5YWYCoh4dFCGsawrp80IdktT2OweCmZnrjotgDiBlV7fvoa9vSgwBpwQsrJEk/exec";
+
+let questoesBanco = [];
+let sessionId = null;
+let respondente = null;
+let timerInterval = null;
+let tempoAtual = 60;
+let respondidaSessao = false;
+let eliminadas = [];
+let questoesSorteadas = [];
+
+function mostrar(id) { document.getElementById(id).classList.add("ativo"); }
+function ocultar(id) { document.getElementById(id).classList.remove("ativo"); }
+
+// QUESTÕES HARDCODED (180 questões)
+const QUESTOES_BANCO = [
+  {"q":"Um pesquisador quer investigar se o número de horas de treino com espada (variável X) influencia a quantidade de vitórias em combate (variável Y) entre guerreiros vikings. Nesse desenho, qual é a variável dependente?","opcoes":["Número de horas de treino com espada","Quantidade de vitórias em combate","Tipo de espada utilizada","Idade do guerreiro"],"resp":1},
+  {"q":"O Jarl classifica seus guerreiros em: 'Berserkr', 'Ulfheðnar' e 'Einherjar'. Que tipo de escala de mensuração está sendo utilizado?","opcoes":["Nominal","Ordinal","Intervalar","Razão"],"resp":0},
+  {"q":"Um estudo mede a temperatura em graus Celsius dentro de diferentes salões de banquete em Midgard. Essa medida utiliza qual escala?","opcoes":["Nominal","Ordinal","Intervalar","Razão"],"resp":2},
+  {"q":"Em um experimento, clãs vikings são aleatoriamente designados para receber treinamento com arco ou com lança. O pesquisador mede o desempenho em batalha após 6 meses. Qual o desenho de pesquisa?","opcoes":["Estudo de caso","Survey transversal","Experimento com grupo controle aleatorizado","Estudo correlacional"],"resp":2},
+  {"q":"Um pesquisador hipotetiza que a confiança no Jarl (X) aumenta a disposição para batalha (Y), mas somente quando o guerreiro possui alta coesão com o clã (W). Nesse modelo, a coesão com o clã funciona como:","opcoes":["Variável mediadora","Variável moderadora","Variável dependente","Variável de controle"],"resp":1},
+  {"q":"Um estudo propõe que a liderança do Jarl (X) aumenta a motivação dos guerreiros (M), que por sua vez aumenta o desempenho em batalha (Y). A motivação dos guerreiros funciona como:","opcoes":["Variável moderadora","Variável mediadora","Variável independente","Variável de confusão"],"resp":1},
+  {"q":"Um questionário mede 'lealdade ao Jarl' com 5 itens Likert. Ao aplicar o instrumento duas vezes com intervalo de 2 semanas aos mesmos guerreiros, obtém-se correlação de 0.92. Esse procedimento avalia qual propriedade psicométrica?","opcoes":["Validade de conteúdo","Validade de construto","Confiabilidade teste-reteste","Validade preditiva"],"resp":2},
+  {"q":"Um pesquisador operacionaliza 'força de combate' como o peso máximo que o guerreiro levanta na forja. Críticos argumentam que força de combate envolve também agilidade, resistência e técnica — não apenas força bruta. Essa crítica refere-se a um problema de:","opcoes":["Confiabilidade interna","Validade de construto","Erro amostral","Multicolinearidade"],"resp":1},
+  {"q":"Em um estudo quasi-experimental, aldeias vikings que voluntariamente adotaram novas técnicas agrícolas são comparadas com aldeias que não adotaram. A principal ameaça à validade interna neste desenho é:","opcoes":["Mortalidade experimental","Viés de seleção (auto-seleção dos grupos)","Efeito teto","Erro de mensuração aleatório"],"resp":1},
+  {"q":"Um pesquisador mede a satisfação dos guerreiros com o hidromel do salão e a intenção de permanecer no clã usando o mesmo questionário, respondido pelo mesmo guerreiro, no mesmo momento. Qual viés metodológico é mais provável?","opcoes":["Viés de sobrevivência","Viés de método comum (Common Method Bias)","Viés de publicação","Falácia ecológica"],"resp":1}
+];
+
+// Detecta abandono
+window.addEventListener("beforeunload", () => {
+  if (sessionId && respondente && respondente.status === "respondendo") {
+    registrarAbandono();
+  }
+});
+
+async function carregarQuestoes() {
+  // Questões já estão carregadas em QUESTOES_BANCO
+  questoesBanco = QUESTOES_BANCO;
+}
+
+async function iniciarJogo() {
+  const nome = document.getElementById("nome").value.trim();
+  const ra = document.getElementById("ra").value.trim();
+  const programa = document.getElementById("programa").value;
+  
+  if (!nome || !ra || !programa) {
+    alert("❌ Preencha todos os campos!");
+    return;
+  }
+  
+  sessionId = Date.now().toString();
+  respondente = {
+    nome: nome,
+    ra: ra,
+    programa: programa,
+    ip: "capturando...",
+    inicio: new Date().toLocaleTimeString(),
+    questoes: [],
+    respostas: [],
+    idx_atual: 0,
+    pular_usados: 3,
+    eliminar_usados: 3,
+    ajuda_usados: 3,
+    status: "respondendo"
+  };
+  
+  // Pega IP
+  fetch("https://api.ipify.org?format=json")
+    .then(r => r.json())
+    .then(d => { respondente.ip = d.ip; })
+    .catch(() => { respondente.ip = "desconhecido"; });
+  
+  // Sorteia 50 questões
+  questoesSorteadas = [];
+  const indices = [];
+  while (questoesSorteadas.length < 50 && indices.length < questoesBanco.length) {
+    const idx = Math.floor(Math.random() * questoesBanco.length);
+    if (!indices.includes(idx)) {
+      indices.push(idx);
+      questoesSorteadas.push(questoesBanco[idx]);
+    }
+  }
+  
+  respondente.questoes = questoesSorteadas;
+  
+  ocultar("telaLogin");
+  mostrar("telaJogo");
+  carregarQuestao();
+}
+
+function carregarQuestao() {
+  const idx = respondente.idx_atual;
+  
+  if (idx >= 50) {
+    finalizarJogo();
+    return;
+  }
+  
+  const q = respondente.questoes[idx];
+  
+  document.getElementById("statusQuestao").textContent = `Questão ${idx + 1} de 50`;
+  document.getElementById("questaoTexto").textContent = q.q;
+  document.getElementById("contPular").textContent = respondente.pular_usados;
+  document.getElementById("contEliminar").textContent = respondente.eliminar_usados;
+  document.getElementById("contAjuda").textContent = respondente.ajuda_usados;
+  
+  document.getElementById("btnPular").disabled = respondente.pular_usados <= 0;
+  document.getElementById("btnEliminar").disabled = respondente.eliminar_usados <= 0;
+  document.getElementById("btnAjuda").disabled = respondente.ajuda_usados <= 0;
+  
+  const opDiv = document.getElementById("opcoes");
+  opDiv.innerHTML = "";
+  eliminadas = [];
+  
+  for (let i = 0; i < q.opcoes.length; i++) {
+    const div = document.createElement("div");
+    div.className = "opcao";
+    div.textContent = ["A", "B", "C", "D"][i] + ") " + q.opcoes[i];
+    div.onclick = () => responder(i);
+    opDiv.appendChild(div);
+  }
+  
+  document.getElementById("resultadoArea").innerHTML = "";
+  document.getElementById("btnProximo").style.display = "none";
+  respondidaSessao = false;
+  tempoAtual = 60;
+  iniciarTimer();
+}
+
+function iniciarTimer() {
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    tempoAtual--;
+    const timerEl = document.getElementById("timer");
+    timerEl.textContent = tempoAtual;
+    if (tempoAtual <= 10) {
+      timerEl.classList.add("aviso");
+    } else {
+      timerEl.classList.remove("aviso");
+    }
+    if (tempoAtual <= 0) pular();
+  }, 1000);
+}
+
+function responder(opcao) {
+  if (respondidaSessao) return;
+  respondidaSessao = true;
+  clearInterval(timerInterval);
+  
+  const q = respondente.questoes[respondente.idx_atual];
+  const acertou = opcao === q.resp;
+  
+  respondente.respostas.push({
+    questao: q.q,
+    resposta: opcao,
+    correta: q.resp,
+    acertou: acertou
+  });
+  
+  const resultDiv = document.createElement("div");
+  resultDiv.className = "resultado " + (acertou ? "acerto" : "erro");
+  resultDiv.textContent = acertou ? "✅ ACERTOU!" : "❌ ERROU!";
+  document.getElementById("resultadoArea").innerHTML = resultDiv.innerHTML;
+  
+  document.getElementById("btnProximo").style.display = "block";
+}
+
+function pular() {
+  if (respondidaSessao && respondente.respostas.length === respondente.idx_atual + 1) return;
+  
+  clearInterval(timerInterval);
+  
+  if (respondente.pular_usados > 0) {
+    respondente.pular_usados--;
+    respondente.idx_atual++;
+    carregarQuestao();
+  }
+}
+
+function eliminar() {
+  const q = respondente.questoes[respondente.idx_atual];
+  const opcao_correta = q.resp;
+  
+  const incorretas = [0, 1, 2, 3].filter(i => i !== opcao_correta);
+  eliminadas = [];
+  
+  while (eliminadas.length < 2 && incorretas.length > 0) {
+    const idx = Math.floor(Math.random() * incorretas.length);
+    eliminadas.push(incorretas[idx]);
+    incorretas.splice(idx, 1);
+  }
+  
+  const opcoes = document.querySelectorAll(".opcao");
+  eliminadas.forEach(i => opcoes[i].classList.add("desabilitada"));
+  
+  respondente.eliminar_usados--;
+  document.getElementById("btnEliminar").disabled = true;
+}
+
+function ajuda() {
+  const q = respondente.questoes[respondente.idx_atual];
+  const opcao_correta = q.resp;
+  
+  const sabotado = Math.random() < 0.30;
+  let resposta;
+  
+  if (sabotado) {
+    const erradas = [0, 1, 2, 3].filter(i => i !== opcao_correta);
+    resposta = erradas[Math.floor(Math.random() * erradas.length)];
+  } else {
+    resposta = opcao_correta;
+  }
+  
+  const resultDiv = document.createElement("div");
+  resultDiv.className = "resultado " + (sabotado ? "sabotado" : "acerto");
+  resultDiv.textContent = (sabotado ? "⚠️ SABOTADO! " : "💡 ") + "Resposta sugerida: " + ["A", "B", "C", "D"][resposta];
+  document.getElementById("resultadoArea").innerHTML = resultDiv.innerHTML;
+  
+  respondente.ajuda_usados--;
+  document.getElementById("btnAjuda").disabled = true;
+}
+
+function proximaQuestao() {
+  respondente.idx_atual++;
+  carregarQuestao();
+}
+
+function registrarAbandono() {
+  const acertos = respondente.respostas.filter(r => r.acertou).length;
+  const nota = (acertos / 50) * 10;
+  
+  const payload = {
+    nome: respondente.nome,
+    ra: respondente.ra,
+    programa: respondente.programa,
+    ip: respondente.ip,
+    inicio: respondente.inicio,
+    acertos: acertos,
+    nota: nota.toFixed(2),
+    abandonado: true,
+    detalhes: respondente.respostas
+  };
+  
+  navigator.sendBeacon(WEBHOOK_URL, JSON.stringify(payload));
+}
+
+async function finalizarJogo() {
+  respondente.status = "finalizado";
+  clearInterval(timerInterval);
+  
+  const acertos = respondente.respostas.filter(r => r.acertou).length;
+  const nota = (acertos / 50) * 10;
+  
+  const payload = {
+    nome: respondente.nome,
+    ra: respondente.ra,
+    programa: respondente.programa,
+    ip: respondente.ip,
+    inicio: respondente.inicio,
+    acertos: acertos,
+    nota: nota.toFixed(2),
+    abandonado: false,
+    detalhes: respondente.respostas
+  };
+  
+  try {
+    await fetch(WEBHOOK_URL, {
+      method: "POST",
+      body: JSON.stringify(payload)
+    });
+  } catch (e) {
+    console.error("Erro ao enviar dados:", e);
+  }
+  
+  ocultar("telaJogo");
+  mostrar("telaFinal");
+  
+  document.getElementById("statusFinal").textContent = "✅ Respostas registradas na planilha!";
+  document.getElementById("textofinal").innerHTML = `
+    ${nota.toFixed(2)}<br>
+    <p style="font-size: 1em; margin-top: 10px;">Acertos: ${acertos} de 50 (${((acertos/50)*100).toFixed(1)}%)</p>
+  `;
+}
+
+// Carrega questões ao abrir
+carregarQuestoes();
+</script>
+
+</body>
+</html>
