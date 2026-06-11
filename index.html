@@ -132,7 +132,7 @@
 </div>
 
 <script>
-const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbxEkX2yCY8xL2DPoyUZ7ikHT2cL1l9AiLcbBhx7VCfYLmdzybGCtQzPdcaqWYpZvfMu/exec";
+const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwd_iLePnEcLDYFY8M_2cw2-LkbZ-_3-ThDfQq1f9cmpDghE-gQtCyAOCuTo5H3OBUo/exec";
 
 let questoesBanco = [];
 let respondente = null;
@@ -316,38 +316,85 @@ async function finalizarJogo() {
     }))
   };
   
+  console.log('Enviando para webhook:', JSON.stringify(payload).substring(0, 200) + '...');
+  
   try {
-    await fetch(WEBHOOK_URL, {
+    const response = await fetch(WEBHOOK_URL, {
       method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify(payload)
     });
+    
+    const result = await response.json();
+    console.log('Resposta do webhook:', result);
+    
+    if (!result.success) {
+      console.warn('Webhook retornou erro:', result.error);
+    }
   } catch (e) {
-    console.error("Erro ao enviar:", e);
+    console.error("Erro ao enviar para webhook:", e);
   }
   
   ocultar("telaJogo");
   mostrar("telaFinal");
   
-  document.getElementById("statusFinal").textContent = "Respostas registradas!";
+  document.getElementById("statusFinal").textContent = "Respostas enviadas para analise!";
   document.getElementById("textofinal").innerHTML = nota.toFixed(2) + '<br><p style="font-size:1em;margin-top:10px;">Acertos: ' + acertos + ' de 50 (' + ((acertos/50)*100).toFixed(1) + '%)</p>';
 }
 
 function baixarRelatorio() {
-  let html = "<!DOCTYPE html><html><head><meta charset='UTF-8'><title>Relatorio - " + respondente.nome + "</title><style>body{font-family:Georgia,serif;padding:20px}.container{max-width:900px;margin:0 auto;background:white;padding:30px}.questao{margin:20px 0;padding:15px;border-left:4px solid gold;background:#f9f9f9}.correta{color:green;font-weight:bold}.errada{color:red;font-weight:bold}</style></head><body><div class='container'><h1>Sabotage Time - Relatorio</h1>";
+  let html = "<!DOCTYPE html><html><head><meta charset='UTF-8'><title>Relatorio - " + respondente.nome + "</title><style>body{font-family:Georgia,serif;padding:20px;background:#f5f5f5}.container{max-width:900px;margin:0 auto;background:white;padding:30px;border-radius:8px}.header{background:#2d2d2d;color:gold;padding:15px;margin:20px 0;border-radius:5px}.questao{margin:30px 0;padding:20px;border-left:5px solid gold;background:#f9f9f9;border-radius:5px}.num{color:gold;font-weight:bold;font-size:1.1em}.correta{color:green;font-weight:bold}.errada{color:red;font-weight:bold}.opcao{margin:8px 0;padding:8px;background:white;border-left:3px solid #ddd}.opcao.selecionada{border-left-color:blue;background:#e3f2fd}.opcao.correta-opcao{border-left-color:green;background:#e8f5e9}.resumo{background:gold;color:black;padding:20px;text-align:center;font-size:1.3em;border-radius:5px;margin:20px 0;font-weight:bold}</style></head><body><div class='container'>";
+  
+  html += "<div class='header'>";
+  html += "<h1>SABOTAGE TIME - RELATÓRIO DETALHADO</h1>";
   html += "<p><strong>Aluno:</strong> " + respondente.nome + "</p>";
   html += "<p><strong>RA:</strong> " + respondente.ra + "</p>";
-  html += "<p><strong>Nota:</strong> " + nota.toFixed(2) + "/10</p>";
-  html += "<p><strong>Acertos:</strong> " + acertos + "/50</p>";
+  html += "<p><strong>Programa:</strong> " + respondente.programa + "</p>";
+  html += "</div>";
+  
+  html += "<div class='resumo'>";
+  html += "<div>NOTA FINAL: " + nota.toFixed(2) + " / 10.0</div>";
+  html += "<div>ACERTOS: " + acertos + " / 50 (" + ((acertos/50)*100).toFixed(1) + "%)</div>";
+  html += "</div>";
   
   respondente.questoes.forEach((q, idx) => {
-    const respAluno = respondente.respostas[idx] !== undefined ? String.fromCharCode(65 + respondente.respostas[idx]) : "Nao respondida";
-    const respCorreta = String.fromCharCode(65 + q.resp);
-    const acertou = respondente.respostas[idx] === q.resp;
+    const respAluno = respondente.respostas[idx];
+    const respCorreta = q.resp;
+    const acertou = respAluno === respCorreta;
     
-    html += "<div class='questao'><p><strong>Q" + (idx + 1) + ":</strong> " + q.q + "</p>";
-    html += "<p>Sua resposta: " + respAluno + "</p>";
-    html += "<p>Correta: <span class='" + (acertou ? 'correta' : 'errada') + "'>" + respCorreta + "</span></p></div>";
+    const textRespAluno = respAluno !== undefined ? q.opcoes[respAluno] : "Nao respondida";
+    const textRespCorreta = q.opcoes[respCorreta];
+    
+    html += "<div class='questao'>";
+    html += "<p class='num'>QUESTAO " + (idx + 1) + "</p>";
+    html += "<p><strong>" + q.q + "</strong></p>";
+    
+    html += "<p style='margin:15px 0;font-weight:bold;color:#666'>OPCOES:</p>";
+    for (let i = 0; i < 4; i++) {
+      const classe = (i === respAluno) ? ' selecionada' : '';
+      const classeCorreta = (i === respCorreta) ? ' correta-opcao' : '';
+      html += "<div class='opcao" + classe + classeCorreta + "'>";
+      html += "<strong>" + String.fromCharCode(65 + i) + ")</strong> " + q.opcoes[i];
+      if (i === respAluno && i === respCorreta) {
+        html += " <span class='correta'>✓ SELECIONADA E CORRETA</span>";
+      } else if (i === respAluno) {
+        html += " <span class='errada'>✗ SELECIONADA (ERRADA)</span>";
+      } else if (i === respCorreta) {
+        html += " <span class='correta'>✓ RESPOSTA CORRETA</span>";
+      }
+      html += "</div>";
+    }
+    
+    html += "<p style='margin-top:15px'><strong>Resultado:</strong> <span class='" + (acertou ? 'correta' : 'errada') + "'>" + (acertou ? '✓ CORRETO' : '✗ ERRADO') + "</span></p>";
+    html += "</div>";
   });
+  
+  html += "<div class='header' style='margin-top:40px;text-align:center'>";
+  html += "<p>Relatorio gerado automaticamente</p>";
+  html += "<p>2025 - MTPQI UNINOVE</p>";
+  html += "</div>";
   
   html += "</div></body></html>";
   
@@ -355,7 +402,7 @@ function baixarRelatorio() {
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'Relatorio_' + respondente.ra + '.html';
+  a.download = 'Relatorio_' + respondente.ra + '_' + respondente.nome.replace(/\s+/g, '_') + '.html';
   document.body.appendChild(a);
   a.click();
   window.URL.revokeObjectURL(url);
