@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>⚔️ Sabotage Time MTPQI</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); 
+      color: #F5F1E8; 
+      font-family: Georgia, serif; 
+      padding: 15px;
+      min-height: 100vh;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+    h1 { color: #D4AF37; text-align: center; font-size: 2.5em; margin: 20px 0; }
+    
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 2px solid #D4AF37;
+      background: rgba(0,0,0,0.7);
+      color: #F5F1E8;
+      border-radius: 8px;
+      font-size: 1em;
+      font-family: Georgia, serif;
+    }
+    
+    button {
+      cursor: pointer;
+      font-weight: bold;
+      border: none;
+      transition: all 0.3s;
+    }
+    
+    .btn-gold { background: #D4AF37; color: #000; }
+    .btn-gold:hover { background: #F5F1E8; transform: scale(1.02); }
+    .btn-danger { background: #8B0000; color: #fff; }
+    .btn-danger:hover { background: #A00000; }
+    .btn-danger:disabled { background: #4a4a4a; cursor: not-allowed; opacity: 0.5; }
+    
+    .tela { display: none; }
+    .tela.ativo { display: block; }
+    
+    .form-login {
+      background: rgba(45,45,45,0.95);
+      border: 3px solid #D4AF37;
+      padding: 40px;
+      border-radius: 10px;
+      max-width: 500px;
+      margin: 50px auto;
+    }
+    
+    .form-login h2 {
+      color: #D4AF37;
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 1.8em;
+    }
+    
+    .questao-box {
+      background: rgba(212,175,55,0.15);
+      border: 3px solid #D4AF37;
+      padding: 25px;
+      border-radius: 10px;
+      margin: 20px 0;
+    }
+    
+    .questao-titulo {
+      font-size: 1.3em;
+      color: #D4AF37;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    
+    .status-bar {
+      background: rgba(212,175,55,0.2);
+      padding: 15px;
+      border-radius: 8px;
+      margin: 15px 0;
+      text-align: center;
+      color: #D4AF37;
+      font-weight: bold;
+    }
+    
+    .timer {
+      font-size: 3em;
+      color: #D4AF37;
+      text-align: center;
+      font-weight: bold;
+      margin: 15px 0;
+    }
+    
+    .timer.aviso { color: #FF6B6B; animation: pulse 0.5s infinite; }
+    
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    
+    .opcoes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 20px 0;
+    }
+    
+    .opcao {
+      background: rgba(212,175,55,0.2);
+      border: 3px solid #D4AF37;
+      padding: 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.05em;
+      color: #F5F1E8;
+      transition: all 0.2s;
+      text-align: center;
+      font-weight: bold;
+    }
+    
+    .opcao:hover { background: #D4AF37; color: #000; transform: scale(1.05); }
+    .opcao.desabilitada { opacity: 0.3; cursor: not-allowed; }
+    
+    .mecanicas {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 20px 0;
+    }
+    
+    .mecanica {
+      background: rgba(212,175,55,0.15);
+      border: 2px solid #D4AF37;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    
+    .mecanica button { margin: 5px 0; font-size: 0.9em; padding: 8px; }
+    .mecanica p { color: #D4AF37; font-weight: bold; margin: 5px 0; }
+    
+    .resultado {
+      font-size: 1.3em;
+      padding: 20px;
+      text-align: center;
+      margin: 15px 0;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+    
+    .resultado.acerto {
+      background: rgba(74, 125, 36, 0.4);
+      color: #7FFF00;
+      border: 2px solid #4a7d24;
+    }
+    
+    .resultado.erro {
+      background: rgba(139, 0, 0, 0.4);
+      color: #FF6B6B;
+      border: 2px solid #8B0000;
+    }
+    
+    .resultado.sabotado {
+      background: rgba(255, 107, 107, 0.4);
+      color: #FFD700;
+      border: 2px solid #FF6B6B;
+    }
+    
+    .final {
+      background: rgba(212,175,55,0.2);
+      border: 3px solid #D4AF37;
+      padding: 40px;
+      border-radius: 10px;
+      text-align: center;
+      max-width: 500px;
+      margin: 50px auto;
+    }
+    
+    .final h2 { color: #D4AF37; font-size: 2.2em; margin: 20px 0; }
+    .final p { font-size: 1.2em; margin: 15px 0; color: #F5F1E8; }
+    .final .nota { color: #D4AF37; font-size: 2em; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>⚔️ SABOTAGE TIME</h1>
+  
+  <!-- TELA LOGIN -->
+  <div class="tela ativo" id="telaLogin">
+    <div class="form-login">
+      <h2>Bem-vindo ao Desafio!</h2>
+      <input type="text" id="nome" placeholder="Nome completo" required>
+      <input type="text" id="ra" placeholder="RA (Matrícula)" required>
+      <select id="programa" required>
+        <option value="">-- Selecione seu Programa --</option>
+        <option value="PPGA Mestrado">PPGA Mestrado</option>
+        <option value="PPGA Doutorado">PPGA Doutorado</option>
+        <option value="PPGP Mestrado">PPGP Mestrado</option>
+        <option value="PPGP Doutorado">PPGP Doutorado</option>
+        <option value="Outro">Outro</option>
+      </select>
+      <button class="btn btn-gold" onclick="iniciarJogo()">🎮 COMEÇAR</button>
+    </div>
+  </div>
+  
+  <!-- TELA JOGO -->
+  <div class="tela" id="telaJogo">
+    <div class="status-bar" id="statusQuestao"></div>
+    
+    <div class="timer" id="timer">60</div>
+    
+    <div class="questao-box">
+      <div class="questao-titulo" id="questaoTexto"></div>
+      <div class="opcoes" id="opcoes"></div>
+    </div>
+    
+    <div id="resultadoArea"></div>
+    
+    <div class="mecanicas">
+      <div class="mecanica">
+        <button class="btn btn-danger" id="btnPular" onclick="pular()">PULAR</button>
+        <p id="contPular">3</p>
+      </div>
+      <div class="mecanica">
+        <button class="btn btn-danger" id="btnEliminar" onclick="eliminar()">ELIMINAR 2</button>
+        <p id="contEliminar">3</p>
+      </div>
+      <div class="mecanica">
+        <button class="btn btn-danger" id="btnAjuda" onclick="ajuda()">AJUDA 🎲</button>
+        <p id="contAjuda">3</p>
+      </div>
+    </div>
+    
+    <button class="btn btn-gold" id="btnProximo" onclick="proximaQuestao()" style="display: none;">PRÓXIMA ➜</button>
+  </div>
+  
+  <!-- TELA FINAL -->
+  <div class="tela" id="telaFinal">
+    <div class="final">
+      <h2>🎉 JOGO FINALIZADO!</h2>
+      <p>Obrigado por participar!</p>
+      <p id="statusFinal"></p>
+      <p class="nota" id="textofinal"></p>
+      <button class="btn btn-gold" onclick="baixarRelatorio()">📥 BAIXAR RELATÓRIO</button>
+      <button class="btn btn-gold" onclick="location.reload()">VOLTAR AO INÍCIO</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbxEkX2yCY8xL2DPoyUZ7ikHT2cL1l9AiLcbBhx7VCfYLmdzybGCtQzPdcaqWYpZvfMu/exec";
+
+let questoesBanco = [];
+let sessionId = null;
+let respondente = null;
+let timerInterval = null;
+let tempoAtual = 60;
+let respondidaSessao = false;
+let eliminadas = [];
+let questoesSorteadas = [];
+
+function mostrar(id) { document.getElementById(id).classList.add("ativo"); }
+function ocultar(id) { document.getElementById(id).classList.remove("ativo"); }
+
+// QUESTÕES HARDCODED (180 questões)
+const QUESTOES_BANCO = [{"q":"Um pesquisador quer investigar se o número de horas de treino com espada (variável X) influencia a quantidade de vitórias em combate (variável Y) entre guerreiros vikings. Nesse desenho, qual é a variável dependente?","opcoes":["Número de horas de treino com espada","Quantidade de vitórias em combate","Tipo de espada utilizada","Idade do guerreiro"],"resp":1},{"q":"O Jarl classifica seus guerreiros em: 'Berserkr', 'Ulfheðnar' e 'Einherjar'. Que tipo de escala de mensuração está sendo utilizado?","opcoes":["Nominal","Ordinal","Intervalar","Razão"],"resp":0},{"q":"Um estudo mede a temperatura em graus Celsius dentro de diferentes salões de banquete em Midgard. Essa medida utiliza qual escala?","opcoes":["Nominal","Ordinal","Intervalar","Razão"],"resp":2},{"q":"Em um experimento, clãs vikings são aleatoriamente designados para receber treinamento com arco ou com lança. O pesquisador mede o desempenho em batalha após 6 meses. Qual o desenho de pesquisa?","opcoes":["Estudo de caso","Survey transversal","Experimento com grupo controle aleatorizado","Estudo correlacional"],"resp":2},{"q":"Um pesquisador hipotetiza que a confiança no Jarl (X) aumenta a disposição para batalha (Y), mas somente quando o guerreiro possui alta coesão com o clã (W). Nesse modelo, a coesão com o clã funciona como:","opcoes":["Variável mediadora","Variável moderadora","Variável dependente","Variável de controle"],"resp":1},{"q":"Um estudo propõe que a liderança do Jarl (X) aumenta a motivação dos guerreiros (M), que por sua vez aumenta o desempenho em batalha (Y). A motivação dos guerreiros funciona como:","opcoes":["Variável moderadora","Variável mediadora","Variável independente","Variável de confusão"],"resp":1},{"q":"Um questionário mede 'lealdade ao Jarl' com 5 itens Likert. Ao aplicar o instrumento duas vezes com intervalo de 2 semanas aos mesmos guerreiros, obtém-se correlação de 0.92. Esse procedimento avalia qual propriedade psicométrica?","opcoes":["Validade de conteúdo","Validade de construto","Confiabilidade teste-reteste","Validade preditiva"],"resp":2},{"q":"Um pesquisador operacionaliza 'força de combate' como o peso máximo que o guerreiro levanta na forja. Críticos argumentam que força de combate envolve também agilidade, resistência e técnica — não apenas força bruta. Essa crítica refere-se a um problema de:","opcoes":["Confiabilidade interna","Validade de construto","Erro amostral","Multicolinearidade"],"resp":1},{"q":"Em um estudo quasi-experimental, aldeias vikings que voluntariamente adotaram novas técnicas agrícolas são comparadas com aldeias que não adotaram. A principal ameaça à validade interna neste desenho é:","opcoes":["Mortalidade experimental","Viés de seleção (auto-seleção dos grupos)","Efeito teto","Erro de mensuração aleatório"],"resp":1},{"q":"Um pesquisador mede a satisfação dos guerreiros com o hidromel do salão e a intenção de permanecer no clã usando o mesmo questionário, respondido pelo mesmo guerreiro, no mesmo momento. Qual viés metodológico é mais provável?","opcoes":["Viés de sobrevivência","Viés de método comum (Common Method Bias)","Viés de publicação","Falácia ecológica"],"resp":1},{"q":"Um ferreiro de Asgard registrou o peso (em kg) de 5 espadas forjadas: 2, 3, 3, 4, 8. Qual é a mediana desse conjunto?","opcoes":["3","4","3.5","8"],"resp":0},{"q":"As idades de 6 guerreiros selecionados para uma expedição são: 20, 22, 25, 25, 30, 35. Qual é a moda?","opcoes":["25","26.17","27.5","20"],"resp":0},{"q":"O Jarl quer saber a medida de dispersão que considera todos os valores e é expressa na mesma unidade que os dados originais. Qual medida ele deve usar?","opcoes":["Variância","Amplitude","Desvio padrão","Coeficiente de variação"],"resp":2},{"q":"Em um boxplot da produção de hidromel de 50 aldeias, o que representam os 'bigodes' (whiskers)?","opcoes":["A média e o desvio padrão","O primeiro e o terceiro quartis","Os valores mínimo e máximo dentro de 1.5 × IQR dos quartis","Os percentis 5 e 95"],"resp":2},{"q":"A distribuição do peso de ouro saqueado por 200 guerreiros apresenta uma cauda longa à direita. Nessa situação, qual relação entre média, mediana e moda é mais provável?","opcoes":["Média < Mediana < Moda","Média = Mediana = Moda","Moda < Mediana < Média","Mediana < Moda < Média"],"resp":2},{"q":"Um guerreiro obteve z-score = −1.5 em um teste de pontaria com arco. O que isso significa?","opcoes":["Ele acertou 1.5 alvos a menos que a média","Seu desempenho está 1.5 desvios padrão abaixo da média do grupo","Ele está no percentil 15 da distribuição","A probabilidade de seu resultado é 1.5%"],"resp":1},{"q":"A produção de barris de hidromel em duas aldeias tem a mesma média (50 barris), mas a Aldeia A tem desvio padrão de 5 e a Aldeia B tem desvio padrão de 15. O que se pode concluir?","opcoes":["A Aldeia B produz mais hidromel em média","A Aldeia A tem produção mais homogênea e previsível","As duas aldeias têm a mesma variabilidade","A Aldeia A tem mais outliers"],"resp":1},{"q":"Uma distribuição do tempo de forja de espadas apresenta curtose (excesso) igual a +4.2. Comparada à distribuição normal, essa distribuição é:","opcoes":["Platicúrtica — mais achatada, com caudas leves","Mesocúrtica — idêntica à normal","Leptocúrtica — mais concentrada no centro e com caudas pesadas","Assimétrica negativa"],"resp":2},{"q":"Os saques de 100 expedições têm Q1 = 30 moedas e Q3 = 70 moedas. Pelo critério do boxplot (1.5 × IQR), a partir de qual valor um saque seria classificado como outlier superior?","opcoes":["Acima de 100 moedas","Acima de 110 moedas","Acima de 130 moedas","Acima de 150 moedas"],"resp":2},{"q":"Um pesquisador compara a variabilidade do peso de espadas (média = 3 kg, DP = 0.6 kg) com a variabilidade do comprimento de lanças (média = 200 cm, DP = 20 cm). Qual medida permite comparação direta entre as duas variáveis?","opcoes":["Variância de cada variável","Desvio padrão padronizado (z-score)","Coeficiente de variação (CV = DP/Média × 100)","Amplitude interquartil (IQR)"],"resp":2},{"q":"Em um saco com 4 runas vermelhas e 6 runas azuis, qual a probabilidade de sortear uma runa vermelha ao acaso?","opcoes":["0.60","0.40","0.50","0.67"],"resp":1},{"q":"Na distribuição normal padrão (Z), aproximadamente qual percentual dos dados está entre −1 e +1 desvios padrão da média?","opcoes":["50%","68%","95%","99.7%"],"resp":1},{"q":"Dois eventos são mutuamente exclusivos quando:","opcoes":["A ocorrência de um não afeta a probabilidade do outro","Ambos ocorrem simultaneamente com alta probabilidade","A ocorrência de um impede a ocorrência do outro","A probabilidade conjunta é igual ao produto das probabilidades individuais"],"resp":2},{"q":"Se a força de guerreiros segue uma distribuição normal com média 100 e desvio padrão 15, qual é o z-score de um guerreiro com força 130?","opcoes":["1.0","1.5","2.0","3.0"],"resp":2},{"q":"O Teorema Central do Limite (TCL) afirma que, à medida que o tamanho da amostra aumenta, a distribuição das médias amostrais:","opcoes":["Se aproxima da distribuição uniforme, independentemente da população","Se aproxima da distribuição normal, independentemente da forma da distribuição original","Mantém a mesma forma da distribuição original da população","Converge para uma distribuição qui-quadrado"],"resp":1},{"q":"Um oráculo de Midgard estima que 5% dos guerreiros carregam uma marca rúnica especial. Se dois guerreiros são selecionados independentemente ao acaso, qual a probabilidade de ambos terem a marca?","opcoes":["0.10","0.05","0.0025","0.025"],"resp":2},{"q":"A distribuição t de Student, comparada à distribuição normal padrão, apresenta:","opcoes":["Caudas mais leves e pico mais alto","Caudas mais pesadas e pico mais baixo, convergindo para a normal com n grande","Formato idêntico à normal, independentemente do tamanho amostral","Assimetria positiva quando os graus de liberdade são baixos"],"resp":1},{"q":"Na feira de Birka, 60% dos mercadores vendem especiarias e 30% vendem tecidos. Sabendo que 10% vendem ambos, qual a probabilidade de um mercador escolhido ao acaso vender especiarias OU tecidos (regra da adição)?","opcoes":["0.90","0.80","0.70","1.00"],"resp":1},{"q":"Um teste rúnico detecta berserkrs com sensibilidade de 90% e especificidade de 95%. Na população, 2% são berserkrs. Se um guerreiro testa positivo, qual é a probabilidade aproximada de ele realmente ser berserkr (Teorema de Bayes)?","opcoes":["Aproximadamente 90%","Aproximadamente 27%","Aproximadamente 50%","Aproximadamente 2%"],"resp":1},{"q":"Uma população de aldeias tem distribuição de renda fortemente assimétrica à direita (μ = 200, σ = 80). Se amostras de n = 64 aldeias forem repetidamente coletadas, qual será o erro padrão da distribuição amostral das médias?","opcoes":["80","40","10","1.25"],"resp":2},{"q":"Um pesquisador seleciona guerreiros numerando todos os 500 do exército e usando uma tabela de números aleatórios para escolher 50. Qual método de amostragem foi utilizado?","opcoes":["Amostragem estratificada","Amostragem por conveniência","Amostragem aleatória simples","Amostragem por cotas"],"resp":2},{"q":"Um Jarl divide seus guerreiros em 3 grupos (arqueiros, lanceiros, espadachins) e sorteia aleatoriamente guerreiros de cada grupo proporcionalmente. Qual método de amostragem está sendo usado?","opcoes":["Amostragem aleatória simples","Amostragem estratificada","Amostragem por conglomerados","Amostragem por conveniência"],"resp":1},{"q":"Um intervalo de confiança de 95% para a força média dos guerreiros é [85, 115]. Qual a interpretação correta?","opcoes":["95% dos guerreiros têm força entre 85 e 115","Há 95% de probabilidade de que a média populacional esteja entre 85 e 115","Se repetirmos o procedimento muitas vezes, 95% dos intervalos construídos conterão a verdadeira média populacional","A média amostral está 95% próxima da média populacional"],"resp":2},{"q":"Qual dos seguintes fatores NÃO afeta a largura de um intervalo de confiança para a média?","opcoes":["Tamanho da amostra","Nível de confiança escolhido","Desvio padrão da amostra","Valor da média populacional"],"resp":3},{"q":"Um pesquisador quer reduzir pela metade a margem de erro de sua estimativa da produção média de hidromel. Mantendo o nível de confiança, ele precisa:","opcoes":["Dobrar o tamanho da amostra","Quadruplicar o tamanho da amostra","Reduzir o nível de confiança de 95% para 90%","Usar amostragem por conveniência"],"resp":1},{"q":"Ao mudar de um intervalo de confiança de 95% para 99%, mantendo tudo mais constante, o que acontece?","opcoes":["O intervalo fica mais estreito e mais preciso","O intervalo fica mais largo, sacrificando precisão por maior confiança","A margem de erro diminui","O tamanho amostral necessário diminui"],"resp":1},{"q":"Um pesquisador seleciona 10 aldeias inteiras de um total de 100 aldeias e entrevista todos os moradores das aldeias escolhidas. Qual o método de amostragem?","opcoes":["Amostragem estratificada","Amostragem aleatória simples","Amostragem por conglomerados (clusters)","Amostragem sistemática"],"resp":2},{"q":"O erro amostral é definido como a diferença entre a estatística amostral e o parâmetro populacional. Qual das alternativas é VERDADEIRA sobre o erro amostral?","opcoes":["Pode ser completamente eliminado com amostragem aleatória","É um tipo de viés sistemático do pesquisador","Existe mesmo com amostragem aleatória perfeita e diminui com amostras maiores","Só ocorre em amostragem por conveniência"],"resp":2},{"q":"Em uma amostra de 36 guerreiros, a força média foi 100 com desvio padrão de 18. O IC 95% (z = 1.96) é aproximadamente:","opcoes":["[94.12, 105.88]","[97.06, 102.94]","[82.00, 118.00]","[91.00, 109.00]"],"resp":0},{"q":"Um pesquisador entrevista apenas os guerreiros que frequentam o salão de hidromel porque são de fácil acesso. Esse é um exemplo de amostragem por conveniência. A principal consequência é:","opcoes":["O erro padrão aumenta automaticamente","A inferência estatística formal (IC e testes) perde sua base teórica de generalização","Os resultados serão necessariamente enviesados para cima","O tamanho da amostra será sempre insuficiente"],"resp":1},{"q":"Em um teste de hipóteses, a hipótese nula (H₀) geralmente representa:","opcoes":["A hipótese que o pesquisador deseja confirmar","A afirmação de que não há efeito ou diferença na população","A hipótese alternativa quando o resultado é significativo","O valor do p-value antes da análise"],"resp":1},{"q":"O erro Tipo I ocorre quando:","opcoes":["Falhamos em rejeitar H₀ quando ela é falsa","Rejeitamos H₀ quando ela é verdadeira","O tamanho da amostra é muito grande","O p-value é maior que alpha"],"resp":1},{"q":"Se um pesquisador define alpha (α) = 0.05, isso significa que ele aceita uma probabilidade máxima de _____ de cometer um erro Tipo I.","opcoes":["5%","95%","50%","0.5%"],"resp":0},{"q":"Um teste qui-quadrado de independência é utilizado quando o pesquisador quer verificar:","opcoes":["Se a média de dois grupos é diferente","Se existe associação entre duas variáveis categóricas","Se a variância é homogênea entre grupos","Se a distribuição dos dados é normal"],"resp":1},{"q":"Um pesquisador obtém p = 0.03 em um teste sobre a resistência de escudos. Com α = 0.05, a interpretação CORRETA do p-value é:","opcoes":["Há 3% de probabilidade de que H₀ seja verdadeira","Há 97% de certeza de que H₁ é verdadeira","Se H₀ fosse verdadeira, a probabilidade de obter um resultado tão ou mais extremo seria 3%","O efeito tem magnitude de 3%"],"resp":2},{"q":"Um teste qui-quadrado de aderência (goodness of fit) avalia se a distribuição de guerreiros por clã (Urso, Lobo, Corvo, Serpente) difere da distribuição esperada de 25% cada. Se χ² = 2.1 com 3 gl e p = 0.55, a conclusão é:","opcoes":["Os clãs têm distribuição significativamente diferente da esperada","Não há evidência suficiente para rejeitar que a distribuição é uniforme","O teste é inconclusivo porque os graus de liberdade estão errados","Há evidência de que o clã Urso é o maior"],"resp":1},{"q":"Qual a diferença fundamental entre significância estatística e significância prática?","opcoes":["São sinônimos — um resultado estatisticamente significativo é sempre praticamente relevante","Significância estatística depende do p-value; significância prática depende do tamanho do efeito e do contexto","Significância prática só é relevante quando p > 0.05","Significância estatística mede o tamanho do efeito diretamente"],"resp":1},{"q":"Em um estudo com 10.000 guerreiros, uma diferença trivial de 0.5 ponto na força média entre dois clãs produz p < 0.001. Por que isso ocorre?","opcoes":["Porque a diferença é genuinamente grande","Porque com amostras muito grandes, até diferenças minúsculas se tornam estatisticamente significativas","Porque o alpha deveria ter sido ajustado para 0.001","Porque o teste qui-quadrado é mais poderoso que o teste t"],"resp":1},{"q":"Um pesquisador realiza 20 testes de hipótese independentes, todos com α = 0.05 e todas as H₀ verdadeiras. Quantos resultados significativos ele espera encontrar por acaso (falsos positivos)?","opcoes":["Nenhum, pois α = 0.05 protege contra falsos positivos","Aproximadamente 1","Aproximadamente 5","Aproximadamente 10"],"resp":1},{"q":"Um pesquisador define H₁: μ_Clã_A > μ_Clã_B (teste unilateral à direita). Ele encontra que o Clã A tem média significativamente MENOR que o Clã B. A decisão correta é:","opcoes":["Rejeitar H₀ porque houve diferença significativa","Não rejeitar H₀, pois o resultado vai na direção oposta à hipótese alternativa direcional","Converter para teste bilateral e reportar p < 0.05","Reportar p/2 como o valor relevante"],"resp":1},{"q":"Um pesquisador mede a força de guerreiros do Clã Urso (n=30) e do Clã Lobo (n=35) para verificar se há diferença. Os guerreiros são diferentes em cada grupo. Qual teste t é apropriado?","opcoes":["Teste t para uma amostra","Teste t pareado (dependente)","Teste t para amostras independentes","Teste qui-quadrado"],"resp":2},{"q":"Um ferreiro mede o peso de espadas ANTES e DEPOIS de uma nova técnica de têmpera, nas mesmas 20 espadas. Qual teste é adequado?","opcoes":["Teste t para amostras independentes","Teste t pareado (dependente)","ANOVA de um fator","Teste qui-quadrado de independência"],"resp":1},{"q":"Uma das premissas do teste t para amostras independentes é:","opcoes":["As amostras devem ter exatamente o mesmo tamanho","Os dados devem ser categóricos","A variável dependente deve ter distribuição aproximadamente normal nas populações","A variância deve ser diferente entre os grupos"],"resp":2},{"q":"No teste t para amostras independentes com variâncias iguais, os graus de liberdade são calculados como:","opcoes":["n₁ + n₂","n₁ + n₂ − 1","n₁ + n₂ − 2","n₁ × n₂ − 1"],"resp":2},{"q":"O teste de Levene é utilizado antes do teste t para amostras independentes para verificar:","opcoes":["Se as médias dos grupos são iguais","Se a distribuição é normal","Se as variâncias dos dois grupos são homogêneas","Se existem outliers nos dados"],"resp":2},{"q":"Quando o teste de Levene indica variâncias significativamente diferentes entre dois grupos de guerreiros, o pesquisador deve:","opcoes":["Prosseguir com o teste t clássico de Student","Usar o teste t de Welch, que não assume variâncias iguais","Abandonar a análise e coletar novos dados","Transformar os dados usando logaritmo natural"],"resp":1},{"q":"O Cohen's d de 0.80 para a diferença de resistência entre escudos de carvalho e de bétula indica:","opcoes":["Um efeito pequeno","Um efeito médio","Um efeito grande","Um efeito negligenciável"],"resp":2},{"q":"Um pesquisador compara a precisão de arqueiros antes e depois de um treinamento rúnico (n = 15 pares). O teste t pareado resulta em t(14) = 2.45, p = 0.028, d = 0.63, IC 95% da diferença [0.3, 4.7]. Se o IC para a diferença de médias não inclui zero, o que isso indica?","opcoes":["O resultado não é significativo porque d < 0.80","A diferença é estatisticamente significativa — consistente com p < 0.05","O intervalo está errado porque deveria incluir zero","O efeito é grande segundo Cohen"],"resp":1},{"q":"No teste t de Welch, os graus de liberdade são calculados pela aproximação de Welch-Satterthwaite e geralmente resultam em um número não inteiro. Qual a consequência prática disso comparado ao teste t clássico?","opcoes":["O teste de Welch sempre tem mais poder estatístico","Os graus de liberdade são menores, o que torna o teste mais conservador (valor crítico de t maior)","Os graus de liberdade são sempre maiores que no teste t clássico","Não há consequência prática — os resultados são sempre idênticos"],"resp":1},{"q":"Um estudo compara a resistência de armaduras forjadas por dois métodos (n₁ = 8, n₂ = 8). O teste t dá p = 0.042, mas com apenas 16 observações e d = 0.45, o poder estatístico estimado é de apenas 35%. Qual é a melhor interpretação?","opcoes":["O resultado é significativo, portanto o efeito é real e definitivo","O resultado é significativo, mas o baixo poder sugere cautela — o efeito pode estar inflado e o estudo deveria ser replicado com amostra maior","O estudo deve ser descartado porque o poder é inferior a 80%","O p-value está incorreto quando o poder é baixo"],"resp":1},{"q":"Um alquimista de Midgard quer provar que duas receitas de hidromel produzem teor alcoólico equivalente. Qual é a hipótese nula no procedimento TOST?","opcoes":["H₀: as médias dos dois hidroméis são iguais","H₀: a diferença entre as médias é maior ou igual ao limite de equivalência (Δ)","H₀: a diferença entre as médias é menor que Δ","H₀: ambos os hidroméis seguem distribuição normal"],"resp":1},{"q":"Na forja de Brokkr, dois ferreiros produzem espadas. Para demonstrar equivalência na resistência das lâminas, o TOST exige que:","opcoes":["Apenas o teste unilateral superior seja significativo","Ambos os testes unilaterais (superior e inferior) sejam significativos","O teste bilateral tradicional seja não significativo","O intervalo de confiança contenha zero"],"resp":1},{"q":"O Jarl quer comparar a produção de trigo de duas aldeias. Um teste t tradicional retorna p = 0,42. Ele conclui que as produções são equivalentes. Qual o erro?","opcoes":["Deveria ter usado um teste qui-quadrado","Ausência de significância não prova equivalência — seria necessário o TOST","O p-valor deveria ser comparado com α = 0,10","Deveria ter calculado o tamanho de efeito antes de interpretar"],"resp":1},{"q":"Um curandeiro de Asgard testa se uma nova poção é bioequivalente à original. Pela regra 80/125 da FDA, os limites de equivalência para a razão das médias geométricas são:","opcoes":["0,70 a 1,30","0,80 a 1,25","0,90 a 1,10","0,85 a 1,15"],"resp":1},{"q":"Um navegador viking compara duas rotas marítimas. Ele define Δ = 2 dias. O IC 90% da diferença entre as rotas é [−1,5; +1,8]. Qual a conclusão correta pelo TOST?","opcoes":["As rotas não são equivalentes porque o IC inclui zero","As rotas são equivalentes porque o IC 90% está contido dentro de [−2; +2]","Não é possível concluir sem o IC 95%","As rotas são diferentes porque a diferença pode chegar a 1,8 dias"],"resp":1},{"q":"Na feira de Birka, dois mercadores vendem sacos de especiarias. Para o TOST com α = 0,05, a relação correta com intervalos de confiança é:","opcoes":["O IC 95% deve estar contido nos limites de equivalência","O IC 90% deve estar contido nos limites de equivalência","O IC 99% deve estar contido nos limites de equivalência","O IC 80% deve excluir zero"],"resp":1},{"q":"Um ferreiro testa se a dureza de espadas forjadas com dois tipos de minério é equivalente. Ele define Δ = 0,5 desvios-padrão. Com n = 30 por grupo, o poder do TOST é baixo. A explicação mais provável é:","opcoes":["O TOST tem poder inerentemente baixo independente do n","A margem de equivalência Δ é pequena em relação ao tamanho amostral, exigindo amostras maiores","O TOST só funciona com amostras acima de 100","O poder do TOST não depende de Δ, apenas de α"],"resp":1},{"q":"Um sábio de Jotunheim conduz um TOST e obtém p₁ = 0,02 (teste unilateral inferior) e p₂ = 0,07 (teste unilateral superior), com α = 0,05. Qual a conclusão?","opcoes":["Equivalência demonstrada, pois p₁ < 0,05","Equivalência não demonstrada, pois o maior dos dois p-valores (0,07) excede α","Equivalência demonstrada, pois a média dos p-valores é menor que 0,05","O resultado é inconclusivo e requer correção de Bonferroni"],"resp":1},{"q":"Odin Dinho explica que o TOST controla o erro Tipo I de maneira diferente do teste t bilateral. A razão é que:","opcoes":["O TOST usa α/2 em cada teste unilateral, inflando o erro total para 2α","O procedimento de interseção-união (IU) garante que o α do TOST não excede o nível nominal sem necessidade de correção","O TOST requer correção de Bonferroni para manter α em 0,05","O TOST utiliza distribuição qui-quadrado em vez da distribuição t"],"resp":1},{"q":"Um pesquisador de Alfheim conduz simultaneamente um teste t bilateral e um TOST sobre o peso de lingotes de ouro. O teste t dá p = 0,03 (significativo) e o TOST também rejeita H₀. A interpretação correta é:","opcoes":["Os resultados são contraditórios e um dos testes está errado","As médias são estatisticamente diferentes, mas a magnitude da diferença está dentro dos limites de equivalência prática","O TOST não deveria ser aplicado quando o teste t é significativo","Ambos os testes confirmam que não há diferença entre os grupos"],"resp":1},{"q":"O Jarl quer comparar o rendimento de colheita de trigo em três aldeias. A razão F na ANOVA compara:","opcoes":["A variância total com a variância residual","A variância entre grupos com a variância dentro dos grupos","A média dos grupos com a média geral","O desvio padrão entre grupos com o desvio padrão total"],"resp":1},{"q":"Um mestre cervejeiro compara 4 receitas de hidromel com 10 guerreiros avaliando cada uma. Os graus de liberdade do numerador e denominador da razão F são:","opcoes":["4 e 40","3 e 36","4 e 36","3 e 40"],"resp":1},{"q":"Na forja de Nidavellir, um ferreiro quer saber se o tipo de carvão (3 tipos) afeta a dureza das espadas. Quais são as premissas da ANOVA de um fator?","opcoes":["Normalidade dos resíduos, homogeneidade de variâncias e independência das observações","Normalidade, linearidade e ausência de multicolinearidade","Homogeneidade de variâncias, esfericidade e normalidade multivariada","Independência, distribuição uniforme e variâncias iguais"],"resp":0},{"q":"Um pesquisador de Vanaheim compara o tempo de travessia de 5 rotas marítimas. A ANOVA retorna F significativo. O eta-quadrado (η²) informa:","opcoes":["A probabilidade de o resultado ser significativo","A proporção da variância total na variável dependente explicada pelo fator","O número de comparações pareadas significativas","A diferença padronizada entre o maior e o menor grupo"],"resp":1},{"q":"Três clãs viking competem em arremesso de machado. A ANOVA dá F(2, 45) = 4,12, p = 0,023. O Jarl aplica o teste post-hoc de Tukey. A vantagem do Tukey HSD sobre múltiplos testes t é:","opcoes":["Maior poder estatístico em todas as situações","Controle da taxa de erro familywise (Type I) ao fazer todas as comparações pareadas","Não requer premissa de homogeneidade de variâncias","Permite comparações com grupos de tamanhos muito desiguais"],"resp":1},{"q":"Um pesquisador viking compara a produção de leite de cabras alimentadas com 4 dietas diferentes. O teste de Levene indica violação de homogeneidade de variâncias. A alternativa robusta é:","opcoes":["Aplicar a ANOVA tradicional com correção de Bonferroni","Usar a ANOVA de Welch, que não assume variâncias iguais","Transformar os dados em ranks e aplicar o teste F","Aumentar o tamanho amostral até que as variâncias se igualem"],"resp":1},{"q":"Na feira de Hedeby, um mercador compara lucros de 3 rotas comerciais (n = 15 cada). O eta-quadrado é η² = 0,22 e o ômega-quadrado é ω² = 0,18. A diferença entre os dois se deve a:","opcoes":["Um erro de cálculo — ambos deveriam ser iguais","O ômega-quadrado corrige o viés de superestimação do eta-quadrado, especialmente em amostras pequenas","O eta-quadrado usa graus de liberdade do denominador, enquanto o ômega-quadrado usa os do numerador","O ômega-quadrado inclui a variância de interação, e o eta-quadrado não"],"resp":1},{"q":"Um sábio de Asgard obtém F(3, 56) = 3,89, p = 0,013. As variâncias são heterogêneas e os tamanhos amostrais são desiguais (n = 8, 12, 18, 22). Qual teste post-hoc é mais adequado?","opcoes":["Tukey HSD, por ser o mais poderoso","Bonferroni, por ser o mais conservador","Games-Howell, pois não assume variâncias iguais nem tamanhos amostrais iguais","Scheffé, por permitir comparações complexas"],"resp":2},{"q":"Um pesquisador de Midgard analisa 5 tipos de solo para cultivo de cevada. A ANOVA retorna F(4, 95) = 1,02, p = 0,40. Ele reporta η² = 0,04. Muninn lembra que esse eta-quadrado pode ser enganoso. Por quê?","opcoes":["O η² nunca deveria ser reportado quando o F não é significativo","O η² é inflacionado em delineamentos com muitos grupos e não retorna zero mesmo quando o efeito populacional é nulo","O η² deveria ser substituído pelo d de Cohen em ANOVA","O η² só é válido com tamanhos amostrais iguais"],"resp":1},{"q":"Em uma competição de arco e flecha com k = 6 clãs, o pesquisador faz todas as comparações pareadas com testes t sem correção. Quantas comparações são feitas e qual o risco aproximado de pelo menos um erro Tipo I (α = 0,05)?","opcoes":["6 comparações; risco ≈ 26%","15 comparações; risco ≈ 54%","30 comparações; risco ≈ 79%","15 comparações; risco ≈ 75%"],"resp":1},{"q":"O Jarl examina o efeito do tipo de arma (espada, machado) e do tipo de treinamento (leve, intenso) sobre o desempenho em batalha. Esse delineamento é chamado de:","opcoes":["ANOVA de um fator com 4 níveis","ANOVA fatorial 2 × 2","ANOVA de medidas repetidas","MANOVA com dois fatores"],"resp":1},{"q":"Em um delineamento 3 × 2 que investiga tipo de solo (3) e estação do ano (2) sobre a colheita, quantas células existem no delineamento?","opcoes":["5 células","6 células","8 células","9 células"],"resp":1},{"q":"Na ANOVA fatorial, um efeito de interação significa que:","opcoes":["Ambos os fatores são significativos individualmente","O efeito de um fator sobre a VD muda dependendo do nível do outro fator","Os fatores estão correlacionados entre si","A variância de erro é diferente entre os grupos"],"resp":1},{"q":"Um mestre de armas compara 2 tipos de escudo e 3 técnicas de defesa. Na tabela ANOVA, o efeito principal do tipo de escudo tem graus de liberdade iguais a:","opcoes":["1","2","3","5"],"resp":0},{"q":"Odin Dinho analisa um gráfico de interação em que as linhas dos dois tipos de dieta (peixe, carne) são não paralelas ao comparar o vigor de guerreiros em 3 clãs. ThorMento sugere ignorar a interação e interpretar os efeitos principais. Por que isso é arriscado?","opcoes":["Porque os efeitos principais só existem quando não há interação significativa","Porque na presença de interação, os efeitos principais podem ser enganosos — o efeito de um fator depende do nível do outro","Porque a interação sempre anula os efeitos principais","Porque sem interação, a ANOVA fatorial se torna inválida"],"resp":1},{"q":"Um pesquisador viking encontra interação significativa entre tipo de minério (2) e temperatura de forja (3) sobre a resistência da espada. O próximo passo recomendado é:","opcoes":["Reportar apenas os efeitos principais, que são mais informativos","Conduzir análise de efeitos simples (simple effects) para decompor a interação","Refazer a análise sem o fator com menor F","Aplicar correção de Bonferroni nos efeitos principais"],"resp":1},{"q":"Em um delineamento 2 × 3 × 2 (tipo de arma × clã × gênero), o número total de efeitos a serem testados (principais + interações de 2ª ordem + interação de 3ª ordem) é:","opcoes":["5","6","7","8"],"resp":2},{"q":"Um pesquisador de Svartalfheim obtém η²_parcial = 0,15 para a interação em um delineamento 3 × 2. Huginn questiona a interpretação. A diferença entre η² e η²_parcial é que:","opcoes":["O η²_parcial divide a SS do efeito pela SS_total, enquanto η² divide pela SS_erro","O η²_parcial divide a SS do efeito pela soma da SS do efeito com a SS_erro, removendo a variância dos outros fatores do denominador","Ambos são idênticos em delineamentos balanceados","O η²_parcial é sempre menor que o η² para o mesmo efeito"],"resp":1},{"q":"Na análise de um delineamento 2 × 2, Odin Dinho mostra que o efeito principal do Fator A é F = 0,12 (p = 0,73) e do Fator B é F = 0,45 (p = 0,51), mas a interação é F = 14,8 (p < 0,001). Isso é chamado de interação cruzada (crossover). A consequência prática é:","opcoes":["Os efeitos principais são inválidos e devem ser descartados do relatório","As médias marginais se cancelam mutuamente, mascarando efeitos reais que existem em cada nível do outro fator","A ANOVA fatorial não é adequada e deve ser substituída por regressão","Os dados apresentam violação de homogeneidade de variâncias"],"resp":1},{"q":"Um pesquisador conduz um delineamento 4 × 3 desbalanceado (tamanhos amostrais desiguais por célula). O método de Soma de Quadrados recomendado nesse caso, e que testa cada efeito ajustado para todos os outros, é:","opcoes":["Tipo I (sequencial), que respeita a ordem de entrada dos fatores","Tipo II, que ajusta cada efeito para os outros efeitos de mesma ordem, mas não para interações","Tipo III, que testa cada efeito ajustado para todos os outros efeitos no modelo","Não existe diferença entre os tipos quando há desbalanceamento"],"resp":2},{"q":"O mestre de armas de Valhalla mede a velocidade de ataque dos mesmos 20 guerreiros após 1, 3 e 6 meses de treinamento. Esse delineamento é chamado de:","opcoes":["ANOVA de um fator independente","ANOVA de medidas repetidas (within-subjects)","ANOVA fatorial 3 × 20","MANOVA com três variáveis dependentes"],"resp":1},{"q":"Uma vantagem da ANOVA de medidas repetidas em relação à ANOVA entre-sujeitos é:","opcoes":["Não requer premissa de normalidade","Elimina a variabilidade entre sujeitos do erro, aumentando o poder estatístico","Permite usar variáveis dependentes categóricas","Não exige homogeneidade de variâncias"],"resp":1},{"q":"Na ANOVA de medidas repetidas, a premissa de esfericidade se refere a:","opcoes":["Todas as variâncias dos grupos devem ser iguais","As variâncias das diferenças entre todos os pares de condições devem ser iguais","As correlações entre as medidas repetidas devem ser zero","Os resíduos devem seguir distribuição esférica multivariada"],"resp":1},{"q":"Odin Dinho explica que o efeito de carryover (transferência) na medida repetida ocorre quando:","opcoes":["Os participantes abandonam o estudo ao longo do tempo","A exposição a uma condição anterior influencia o desempenho nas condições seguintes","As variâncias mudam entre as medições","O pesquisador altera o instrumento de medida entre as coletas"],"resp":1},{"q":"Um pesquisador de Midgard avalia guerreiros em 4 momentos e o teste de Mauchly indica violação de esfericidade (p = 0,01). O valor de epsilon (ε) de Greenhouse-Geisser é 0,72. A correção consiste em:","opcoes":["Multiplicar os graus de liberdade do numerador e denominador por ε, tornando o teste F mais conservador","Dividir o valor F por ε para reduzir seu valor","Substituir a ANOVA de medidas repetidas por testes t pareados","Aumentar o nível de significância de 0,05 para 0,10"],"resp":0},{"q":"O mestre curandeiro mede a recuperação de guerreiros feridos em 3 momentos. O ε de Greenhouse-Geisser é 0,65 e o de Huynh-Feldt é 0,78. Muninn lembra que a recomendação quando ε < 0,75 é:","opcoes":["Usar sempre a correção de Huynh-Feldt, que é mais poderosa","Usar a correção de Greenhouse-Geisser, que é mais conservadora e indicada para violações mais severas","Ignorar a esfericidade quando ε > 0,50","Usar o limite inferior (lower-bound) de ε = 1/(k−1)"],"resp":1},{"q":"Em um delineamento misto (mixed design), guerreiros de 2 clãs (fator entre-sujeitos) são avaliados em 3 momentos (fator intra-sujeitos). Os efeitos testados são:","opcoes":["Apenas o efeito principal do fator intra-sujeitos e a interação","Efeito principal do fator entre-sujeitos, efeito principal do fator intra-sujeitos e a interação entre ambos","Apenas os dois efeitos principais, sem teste de interação","Um único F omnibus que combina todos os efeitos"],"resp":1},{"q":"Um pesquisador viking tem 4 condições repetidas. O limite inferior (lower-bound) de epsilon é ε = 1/(k−1). Neste caso, o ε lower-bound é:","opcoes":["0,25","0,33","0,50","0,75"],"resp":1},{"q":"Huginn provoca: 'Se a esfericidade perfeita fosse atingida, o que isso significaria sobre a matriz de covariâncias?' A resposta correta é que a matriz exibiria:","opcoes":["Covariâncias zero entre todas as medidas (independência completa)","Variâncias iguais e covariâncias iguais entre todos os pares — estrutura de simetria composta (compound symmetry)","Covariâncias decrescentes à medida que a distância temporal entre as medidas aumenta","Variâncias crescentes ao longo do tempo (heterocedasticidade sistemática)"],"resp":1},{"q":"Um pesquisador conduz medidas repetidas com 5 momentos e obtém teste de Mauchly W = 0,31 (p = 0,002), ε_GG = 0,58, ε_HF = 0,67. Os gl originais são 4 e 76. Os gl corrigidos por Greenhouse-Geisser são aproximadamente:","opcoes":["2 e 38","2,32 e 44,08","3 e 57","1,74 e 33,06"],"resp":1},{"q":"O Jarl quer comparar a produtividade agrícola de 3 aldeias, controlando a fertilidade prévia do solo. Nesse caso, a fertilidade do solo é:","opcoes":["A variável dependente","O fator independente","A covariável","A variável moderadora"],"resp":2},{"q":"A principal finalidade da ANCOVA é:","opcoes":["Testar se a covariável causa diferenças entre os grupos","Reduzir a variância de erro ao remover a variabilidade associada à covariável, aumentando o poder do teste","Substituir a variável dependente pela covariável na análise","Garantir que os grupos tenham médias iguais na covariável"],"resp":1},{"q":"Na ANCOVA, as 'médias ajustadas' representam:","opcoes":["As médias originais dos grupos após remoção de outliers","As médias dos grupos estimadas como se todos tivessem o mesmo valor na covariável","As médias padronizadas em escore z","As médias ponderadas pelo tamanho amostral de cada grupo"],"resp":1},{"q":"Um pesquisador de Helheim compara três métodos de treinamento de guerreiros usando a experiência prévia como covariável. A premissa de homogeneidade das inclinações de regressão exige que:","opcoes":["A covariável tenha variância igual em todos os grupos","A relação linear entre a covariável e a VD seja a mesma em todos os grupos (inclinações paralelas)","A covariável e a VD tenham correlação perfeita","As médias da covariável sejam iguais entre os grupos"],"resp":1},{"q":"Huginn questiona: 'Quando a ANCOVA é preferível ao bloqueio (blocking) como estratégia de controle?' A resposta é:","opcoes":["Quando a variável de controle é categórica com poucos níveis","Quando a variável de controle é contínua e tem relação linear com a VD","Quando os grupos já são homogêneos na variável de controle","Quando se deseja testar a interação entre o fator e a variável de controle"],"resp":1},{"q":"Na ANCOVA, o pesquisador verifica se a interação entre o fator e a covariável é significativa. Se for, isso significa que:","opcoes":["A covariável não é relevante e pode ser removida","A premissa de homogeneidade das inclinações de regressão foi violada, invalidando a ANCOVA padrão","A ANCOVA tem mais poder do que a ANOVA","Os resíduos não são normalmente distribuídos"],"resp":1},{"q":"Um ferreiro compara 4 técnicas de têmpera controlando a temperatura inicial do metal. Sem a covariável, F(3, 36) = 2,41, p = 0,08. Com a covariável, F(3, 35) = 4,87, p = 0,006. Isso demonstra que a ANCOVA:","opcoes":["Criou uma diferença artificial entre os grupos","Reduziu a variância de erro ao extrair a variabilidade da covariável, tornando o teste mais sensível","Alterou as médias dos grupos para forçar significância","Invalidou a premissa de independência entre fator e covariável"],"resp":1},{"q":"Odin Dinho alerta que usar a ANCOVA quando o fator (tratamento) influencia a covariável é problemático. Em um estudo onde clãs recebem treinamentos diferentes e a covariável é 'motivação medida após o início do treinamento', o problema é:","opcoes":["A motivação terá variância zero dentro dos grupos","A covariável pode ser parcialmente um efeito do tratamento, e ajustar por ela remove parte do efeito legítimo do fator","A correlação entre covariável e VD será inflada artificialmente","A ANCOVA não funciona com covariáveis psicológicas"],"resp":1},{"q":"Em um estudo quasi-experimental, um pesquisador de Midgard compara 2 métodos de navegação. As tripulações não foram randomizadas e diferem na experiência prévia. Ele aplica ANCOVA controlando experiência. Muninn sussurra que o viés de Lord (1967) indica que:","opcoes":["A ANCOVA sempre elimina completamente o viés de seleção","Em estudos não randomizados, a ANCOVA pode sub ou superajustar as diferenças, especialmente se a covariável é medida com erro","A ANCOVA é válida apenas em estudos experimentais verdadeiros","O viés de Lord se aplica apenas quando a covariável é categórica"],"resp":1},{"q":"Um pesquisador conduz ANCOVA com 3 grupos e 1 covariável. Os graus de liberdade da ANCOVA, comparados aos da ANOVA sem covariável, mudam da seguinte forma:","opcoes":["Os gl do numerador aumentam em 1 e os do denominador diminuem em 1","Os gl do numerador permanecem os mesmos (k−1) e os do denominador diminuem em 1 (N−k−1) para cada covariável","Ambos os gl permanecem idênticos aos da ANOVA","Os gl do numerador diminuem em 1 e os do denominador permanecem iguais"],"resp":1},{"q":"O Jarl deseja comparar 3 clãs em relação a força, velocidade e resistência simultaneamente. A técnica adequada é:","opcoes":["Três ANOVAs separadas, uma para cada variável dependente","MANOVA, que testa diferenças entre grupos considerando múltiplas variáveis dependentes conjuntamente","Regressão múltipla com três preditores","Análise fatorial exploratória seguida de ANOVA"],"resp":1},{"q":"A principal vantagem da MANOVA sobre a condução de múltiplas ANOVAs separadas é:","opcoes":["A MANOVA requer menos participantes","A MANOVA controla a taxa de erro Tipo I que seria inflada por múltiplos testes","A MANOVA não exige premissa de normalidade","A MANOVA permite variáveis independentes contínuas"],"resp":1},{"q":"Na MANOVA, o teste de Box's M avalia:","opcoes":["A normalidade multivariada dos dados","A homogeneidade das matrizes de covariância entre os grupos","A independência das variáveis dependentes","A ausência de outliers multivariados"],"resp":1},{"q":"Um pesquisador de Asgard mede o comprimento e peso de espadas produzidas por 4 forjas. Na MANOVA, a premissa de normalidade se refere a:","opcoes":["Cada variável dependente individualmente seguir distribuição normal","A distribuição conjunta das variáveis dependentes ser normal multivariada","O fator independente seguir distribuição normal","Os resíduos da regressão entre as VDs serem normais"],"resp":1},{"q":"Na MANOVA, o Traço de Pillai é considerado o critério multivariado mais robusto. Sua principal vantagem é:","opcoes":["É o mais poderoso quando as premissas são perfeitamente atendidas","É o mais robusto a violações de normalidade multivariada e homogeneidade de matrizes de covariância","É o único que funciona com mais de 3 variáveis dependentes","É idêntico à Lambda de Wilks em todas as situações"],"resp":1},{"q":"Um sábio de Jotunheim conduz uma MANOVA comparando 3 tribos em 4 medidas de combate. Lambda de Wilks (Λ) = 0,42, p < 0,001. O próximo passo típico para identificar quais VDs contribuem para a diferença é:","opcoes":["Conduzir ANOVAs univariadas separadas para cada VD como follow-up, com possível correção de α","Repetir a MANOVA removendo uma VD por vez","Calcular o d de Cohen entre cada par de tribos para cada VD","Conduzir uma análise fatorial confirmatória"],"resp":0},{"q":"Huginn questiona: 'Quando a MANOVA pode detectar diferenças que múltiplas ANOVAs não detectam?' A resposta é:","opcoes":["Quando as VDs são completamente independentes entre si","Quando a diferença entre grupos se manifesta na combinação linear das VDs, mesmo que nenhuma VD individualmente seja significativa","Quando há mais participantes que variáveis dependentes","Quando o teste de Box's M é significativo"],"resp":1},{"q":"Um pesquisador de Niflheim tem 3 grupos e 5 variáveis dependentes. O Traço de Hotelling e a Raiz Maior de Roy diferem em que:","opcoes":["Hotelling considera todas as raízes características (eigenvalues) da matriz, enquanto Roy usa apenas a maior raiz","Roy é mais conservador que Hotelling em todas as situações","Hotelling só funciona com 2 grupos, enquanto Roy funciona com qualquer número","Ambos são idênticos, apenas com nomes diferentes para a mesma estatística"],"resp":0},{"q":"Odin Dinho explica que a Raiz Maior de Roy é o teste mais poderoso da MANOVA, mas com uma ressalva importante. Essa ressalva é:","opcoes":["Roy requer normalidade perfeita, o que é raro na prática","Roy é o mais poderoso apenas quando as diferenças entre grupos se concentram em uma única dimensão (variável canônica), mas é extremamente sensível a violações de premissas","Roy não pode ser usado com mais de 2 variáveis dependentes","Roy requer tamanhos amostrais iguais em todos os grupos"],"resp":1},{"q":"Um pesquisador tem 2 grupos e 6 VDs com n = 15 por grupo. O teste de Box's M retorna p = 0,03. Muninn sussurra que Box's M é notoriamente sensível a desvios de normalidade. A decisão mais prudente é:","opcoes":["Rejeitar a homogeneidade e abandonar a MANOVA","Ignorar o resultado porque Box's M é sempre não confiável","Avaliar a magnitude da violação; se as amostras são razoavelmente iguais, usar o Traço de Pillai como critério mais robusto e proceder com cautela","Transformar todas as variáveis em ranks antes de aplicar a MANOVA"],"resp":2},{"q":"O Jarl de Asgard deseja comparar três clãs em relação a duas variáveis dependentes (força de combate e precisão com arco), controlando a experiência prévia de batalha. Qual técnica é mais adequada?","opcoes":["ANOVA de um fator","MANCOVA","Regressão logística múltipla","Teste t para amostras independentes"],"resp":1},{"q":"Na MANCOVA, o papel da covariável é:","opcoes":["Substituir a variável dependente principal","Reduzir o erro residual e controlar diferenças pré-existentes entre grupos","Aumentar o número de níveis do fator independente","Transformar variáveis categóricas em contínuas"],"resp":1},{"q":"Um pesquisador de Midgard analisa o efeito do tipo de treinamento (espada, lança, machado) sobre resistência e agilidade, usando idade como covariável. Quantas variáveis dependentes há neste desenho de MANCOVA?","opcoes":["Uma","Duas","Três","Quatro"],"resp":1},{"q":"Qual dos seguintes NÃO é um pressuposto da MANCOVA?","opcoes":["Homogeneidade das matrizes de variância-covariância","Normalidade multivariada dos resíduos","Homogeneidade dos hiperplanos de regressão","Distribuição binomial das variáveis dependentes"],"resp":3},{"q":"Na forja de Brokkr, três métodos de têmpera são comparados em dureza e flexibilidade da lâmina, controlando a pureza do minério. A homogeneidade dos hiperplanos de regressão significa que:","opcoes":["As variâncias dos grupos são iguais","A relação entre a covariável e as variáveis dependentes é a mesma em todos os grupos","As médias ajustadas são idênticas entre os grupos","Os resíduos seguem distribuição uniforme"],"resp":1},{"q":"Ao comparar quatro tribos vikings em múltiplas variáveis de desempenho, um sábio de Odin poderia rodar ANCOVAs separadas em vez de MANCOVA. A principal desvantagem dessa abordagem é:","opcoes":["As ANCOVAs separadas exigem amostras maiores","A inflação do erro Tipo I por múltiplos testes e a perda de informação sobre correlações entre VDs","A ANCOVA separada não permite covariáveis","A ANCOVA separada exige normalidade multivariada"],"resp":1},{"q":"Na MANCOVA, as médias ajustadas (estimated marginal means) representam:","opcoes":["As médias brutas dos grupos sem qualquer correção","As médias dos grupos após remover o efeito linear da(s) covariável(eis)","As medianas dos grupos ponderadas pelo tamanho amostral","As médias dos grupos multiplicadas pelo coeficiente da covariável"],"resp":1},{"q":"Um drakar (longship) transporta guerreiros de cinco reinos. O pesquisador aplica MANCOVA com três VDs e duas covariáveis. Ao testar o efeito multivariado do reino, obtém Pillai's Trace = 0.48 (p = 0.003). Isso indica que:","opcoes":["As covariáveis não são significativas no modelo","Ao menos uma combinação linear das VDs difere significativamente entre os reinos, após controlar as covariáveis","Todas as três VDs diferem individualmente entre os reinos","O pressuposto de homogeneidade de variâncias foi violado"],"resp":1},{"q":"Se o teste de Box's M na MANCOVA de clãs vikings é significativo (p < 0.001), a consequência mais adequada é:","opcoes":["Ignorar o resultado, pois Box's M é irrelevante para MANCOVA","Interpretar com cautela usando Pillai's Trace, que é mais robusto à violação de homogeneidade das matrizes de covariância","Remover todas as covariáveis do modelo","Converter as variáveis dependentes em ranks antes da análise"],"resp":1},{"q":"Na MANCOVA, quando a interação covariável × fator é significativa, isso indica violação do pressuposto de homogeneidade dos hiperplanos de regressão. A melhor estratégia nesse cenário é:","opcoes":["Prosseguir normalmente, pois a violação não afeta os resultados multivariados","Remover a covariável e rodar apenas MANOVA","Considerar análises estratificadas por nível do fator ou usar modelos que permitam slopes diferentes por grupo (e.g., modelos mistos)","Aumentar o tamanho da amostra até que a interação se torne não significativa"],"resp":2},{"q":"Um sábio de Midgard quer comparar a satisfação com o hidromel (escala ordinal de 1 a 5) entre dois clãs independentes. Qual teste é mais adequado?","opcoes":["Teste t de Student para amostras independentes","Mann-Whitney U","ANOVA de um fator","Teste de Friedman"],"resp":1},{"q":"Os testes não-paramétricos são preferíveis aos paramétricos quando:","opcoes":["Os dados são contínuos e normalmente distribuídos","A amostra é grande e as variâncias são homogêneas","Os dados são ordinais, a distribuição é fortemente assimétrica ou a amostra é muito pequena","O pesquisador deseja maximizar o poder estatístico com amostras grandes"],"resp":2},{"q":"O teste de Wilcoxon signed-rank é o equivalente não-paramétrico de qual teste?","opcoes":["Teste t para amostras independentes","Teste t pareado (amostras dependentes)","ANOVA de medidas repetidas","Qui-quadrado de independência"],"resp":1},{"q":"O coeficiente de correlação de Spearman (ρ) difere do Pearson (r) porque:","opcoes":["Só pode ser usado com amostras maiores que 100","Opera sobre os postos (ranks) dos dados, não sobre os valores brutos","Assume distribuição normal bivariada","Mede apenas relações lineares perfeitas"],"resp":1},{"q":"Quatro aldeias vikings avaliam a qualidade de quatro tipos de pão (cada aldeia prova todos os tipos) numa escala ordinal. O teste correto para comparar os tipos de pão é:","opcoes":["Kruskal-Wallis H","Mann-Whitney U com correção de Bonferroni","Teste de Friedman","ANOVA de um fator"],"resp":2},{"q":"O teste de Kruskal-Wallis revelou diferença significativa entre três tribos na habilidade de navegação (H(2) = 11.34, p = 0.003). Para identificar quais pares diferem, o pesquisador deve:","opcoes":["Rodar um teste t para cada par de tribos","Realizar comparações post hoc com testes de Mann-Whitney e correção para múltiplas comparações (e.g., Bonferroni)","Repetir o Kruskal-Wallis removendo uma tribo de cada vez","Interpretar diretamente o resultado global sem comparações adicionais"],"resp":1},{"q":"Para reportar o tamanho de efeito do teste de Mann-Whitney U entre dois grupos de guerreiros (n₁ = 25, n₂ = 30), a medida mais recomendada é:","opcoes":["Cohen's d","Eta-quadrado parcial (η²p)","r = Z / √N, onde N é o total de observações","Odds ratio"],"resp":2},{"q":"Na feira de Birka, um pesquisador obtém Mann-Whitney U = 45, Z = −3.12, p = 0.002, r = 0.42 comparando o valor de espólios entre dois clãs (n₁ = 28, n₂ = 27). A interpretação correta é:","opcoes":["Não há diferença entre os clãs, pois U é menor que Z","Há diferença significativa com efeito médio-grande; as distribuições de espólios diferem entre os clãs","O resultado é significativo, mas r = 0.42 indica efeito desprezível","O teste é inválido porque os tamanhos amostrais diferem"],"resp":1},{"q":"Uma limitação frequentemente esquecida dos testes baseados em ranks é que eles:","opcoes":["Não podem ser usados com amostras menores que 30","Testam diferenças em distribuições (não apenas medianas), de modo que um resultado significativo pode refletir diferenças de forma ou dispersão, não só de localização","Exigem que os dados originais sejam normalmente distribuídos","Não permitem o cálculo de nenhuma medida de tamanho de efeito"],"resp":1},{"q":"O Jarl deseja correlacionar o ranking de bravura (1º a 50º) com o ranking de generosidade (1º a 50º) de 50 guerreiros. Obtém ρ = 0.78 (p < 0.001). Para calcular o intervalo de confiança de Spearman, a abordagem mais adequada é:","opcoes":["Aplicar a transformação Z de Fisher diretamente, idêntica à usada para Pearson r","Usar bootstrap (reamostragem) para estimar o IC, já que a distribuição amostral de ρ não tem forma fechada simples","Calcular ρ ± 1.96 × (1/√n)","Não é possível calcular IC para correlações de Spearman"],"resp":1},{"q":"O coeficiente de correlação de Pearson (r) entre horas de treinamento com espada e número de vitórias em 40 guerreiros de Valhalla foi r = 0.65. Isso indica:","opcoes":["Que 65% da variação nas vitórias é explicada pelo treinamento","Uma associação linear positiva moderada a forte entre as variáveis","Que o treinamento causa mais vitórias","Que as variáveis têm distribuição normal"],"resp":1},{"q":"Se r = 0.80 entre peso da armadura e fadiga do guerreiro, o coeficiente de determinação (R²) é:","opcoes":["0.80","0.40","0.64","0.89"],"resp":2},{"q":"Na equação de regressão linear simples ŷ = a + bx, o coeficiente 'b' (slope) representa:","opcoes":["O valor previsto de y quando x = 0","A mudança esperada em y para cada unidade de aumento em x","A correlação entre x e y","O erro padrão da estimativa"],"resp":1},{"q":"Qual dos seguintes NÃO é um pressuposto da regressão linear simples?","opcoes":["Relação linear entre x e y","Homocedasticidade dos resíduos","Normalidade dos resíduos","A variável preditora deve ser normalmente distribuída"],"resp":3},{"q":"Um ferreiro de Nidavellir modela: Qualidade da lâmina = 12.5 + 3.2 × (horas de têmpera). O intercepto (12.5) significa que:","opcoes":["Cada hora adicional de têmpera aumenta a qualidade em 12.5 pontos","A qualidade estimada é 12.5 quando as horas de têmpera são zero — mas essa extrapolação pode não ter sentido prático","O modelo explica 12.5% da variância","A correlação entre têmpera e qualidade é 12.5"],"resp":1},{"q":"O método dos mínimos quadrados (OLS) para estimar a reta de regressão busca:","opcoes":["Maximizar a correlação entre x e y","Minimizar a soma dos quadrados dos resíduos (diferenças entre valores observados e preditos)","Equalizar as variâncias de x e y","Minimizar a soma das diferenças absolutas entre observados e preditos"],"resp":1},{"q":"Ao analisar o scatterplot de distância navegada vs. provisões consumidas em 35 longships, observa-se um padrão curvilíneo. A consequência para a regressão linear simples é:","opcoes":["Nenhuma, pois a regressão ajusta qualquer padrão","O R² será artificialmente inflado","As estimativas dos coeficientes serão enviesadas e o modelo subestimará/superestimará sistematicamente em diferentes faixas de x","O teste F será automaticamente não significativo"],"resp":2},{"q":"Na regressão do peso do espólio (VD) sobre o número de batalhas (VI) em 50 guerreiros, obtém-se R² = 0.49, F(1,48) = 46.12, p < 0.001, Sy.x = 8.3 kg. O erro padrão da estimativa (Sy.x) indica que:","opcoes":["49% da variância é explicada, portanto o modelo é perfeito","Os valores preditos desviam, em média, cerca de 8.3 kg dos valores observados — esse valor deve ser avaliado contra a escala prática da VD","O coeficiente de regressão é 8.3","O modelo é não significativo porque o erro é alto"],"resp":1},{"q":"Um pesquisador encontra r = 0.30 (p = 0.04) entre idade do guerreiro e precisão com arco (n = 45). Ao remover dois outliers influentes (leverage alto + resíduo alto), r sobe para 0.71 (p < 0.001). A conduta mais adequada é:","opcoes":["Sempre reportar apenas o resultado sem outliers, pois é mais significativo","Reportar ambas as análises (com e sem outliers), investigar a razão dos valores atípicos e justificar a decisão de inclusão/exclusão com base teórica e diagnóstica","Remover todos os pontos com resíduos acima de 1 desvio padrão","Manter os outliers, pois removê-los é sempre antiético"],"resp":1},{"q":"Na regressão simples, a homocedasticidade é avaliada pelo gráfico de resíduos vs. valores preditos. Se o gráfico mostra um padrão de funil (dispersão crescente), a consequência principal é:","opcoes":["Os coeficientes de regressão se tornam enviesados","Os erros padrão dos coeficientes são incorretos, comprometendo testes de significância e intervalos de confiança, embora os coeficientes em si permaneçam não enviesados","O R² se torna negativo","A relação entre x e y se torna não-linear"],"resp":1},{"q":"A regressão linear múltipla difere da simples porque:","opcoes":["Possui mais de uma variável dependente","Inclui dois ou mais preditores (variáveis independentes) para uma única variável dependente","Não utiliza o método dos mínimos quadrados","Exige que os preditores sejam categóricos"],"resp":1},{"q":"O VIF (Variance Inflation Factor) na regressão múltipla serve para detectar:","opcoes":["Heterocedasticidade","Multicolinearidade entre preditores","Não-normalidade dos resíduos","Outliers influentes"],"resp":1},{"q":"Na regressão múltipla, o R² ajustado é preferível ao R² simples porque:","opcoes":["É sempre maior que o R²","Penaliza a inclusão de preditores que não melhoram substancialmente o modelo, evitando inflação artificial","Só pode ser calculado com mais de 5 preditores","Elimina automaticamente preditores não significativos"],"resp":1},{"q":"Os coeficientes padronizados (beta, β) na regressão múltipla permitem:","opcoes":["Interpretar o intercepto em unidades originais","Comparar a importância relativa dos preditores que estão em escalas diferentes","Eliminar a necessidade de testar pressupostos","Calcular o R² diretamente"],"resp":1},{"q":"Um modelo prevê o saque de batalha (ouro) a partir de: número de guerreiros (β = 0.45), duração do cerco (β = 0.32) e qualidade das armas (β = 0.28). O teste F global é significativo (p < 0.001), mas o preditor 'qualidade das armas' tem p = 0.12. A interpretação correta é:","opcoes":["O modelo todo deve ser descartado porque um preditor não é significativo","O modelo global é significativo, mas a contribuição única de 'qualidade das armas', controlando os demais preditores, não atinge significância estatística","O β = 0.28 está errado porque o preditor não é significativo","A qualidade das armas deve ser removida e o modelo reestimado obrigatoriamente"],"resp":1},{"q":"Na regressão hierárquica, o pesquisador de Midgard adiciona blocos de variáveis em ordem teoricamente definida. A mudança no R² (ΔR²) entre blocos indica:","opcoes":["A correlação entre os blocos de variáveis","A variância adicional explicada pelo novo bloco de preditores, além do que já era explicado pelos blocos anteriores","O VIF médio do novo bloco","A significância individual de cada preditor no novo bloco"],"resp":1},{"q":"A correlação semi-parcial (sr) de um preditor na regressão múltipla indica:","opcoes":["A correlação entre o preditor e a VD após remover o efeito dos demais preditores de ambos","A correlação entre o preditor e a VD após remover o efeito dos demais preditores apenas do preditor — sr² é a contribuição única ao R² total","A correlação entre dois preditores após remover a VD","O coeficiente padronizado beta do preditor"],"resp":1},{"q":"Num modelo com 4 preditores sobre rendimento agrícola das aldeias, o preditor 'irrigação' tem VIF = 8.7 e tolerância = 0.115. O preditor 'proximidade ao rio' tem VIF = 9.2. Diante dessa multicolinearidade:","opcoes":["Ambos os preditores devem ser removidos imediatamente","A multicolinearidade infla os erros padrão dos coeficientes, tornando-os instáveis; o pesquisador deve avaliar se os preditores são teoricamente redundantes e considerar combinar, remover um, ou usar ridge regression","O R² do modelo está deflacionado por causa do VIF alto","A multicolinearidade invalida o teste F global"],"resp":1},{"q":"O método stepwise de seleção de variáveis é criticado na literatura contemporânea porque:","opcoes":["Não permite mais de 3 preditores no modelo","Capitaliza sobre flutuações amostrais, produz modelos instáveis que não replicam, infla R², e os p-values dos coeficientes selecionados são enviesados para baixo","Exige que todos os preditores sejam normalmente distribuídos","Sempre seleciona o mesmo modelo independentemente da amostra"],"resp":1},{"q":"Em um modelo de regressão múltipla predizendo produção de hidromel, o pesquisador adiciona um quinto preditor e observa que o R² sobe de 0.62 para 0.63, mas o R² ajustado cai de 0.59 para 0.58. Isso indica que:","opcoes":["O modelo melhorou significativamente com o novo preditor","O quinto preditor não contribui suficientemente para compensar a perda de graus de liberdade — a melhoria no R² é espúria","Há multicolinearidade perfeita no modelo","O teste F global se tornou não significativo"],"resp":1},{"q":"A regressão logística é usada quando a variável dependente é:","opcoes":["Contínua e normalmente distribuída","Categórica binária (e.g., sobreviveu/não sobreviveu à batalha)","Ordinal com 5 ou mais categorias","Uma contagem de eventos (e.g., número de ataques)"],"resp":1},{"q":"Na regressão logística, a função logit transforma:","opcoes":["A variável dependente contínua em categórica","A probabilidade de ocorrência do evento (p) no logaritmo natural das odds: ln(p / (1−p))","Os preditores categóricos em contínuos","Os resíduos em valores padronizados"],"resp":1},{"q":"Na regressão logística, a razão de chances (odds ratio) de um preditor igual a 2.5 significa que:","opcoes":["A probabilidade do evento aumenta em 250%","Para cada unidade de aumento no preditor, as odds do evento se multiplicam por 2.5 (aumento de 150% nas odds)","O preditor explica 25% da variância","O coeficiente logit é 2.5"],"resp":1},{"q":"A regressão logística estima seus parâmetros pelo método de:","opcoes":["Mínimos quadrados ordinários (OLS)","Máxima verossimilhança (Maximum Likelihood Estimation)","Mínimos quadrados generalizados (GLS)","Momentos generalizados (GMM)"],"resp":1},{"q":"Um modelo logístico prevê se um guerreiro viking sobrevive ao inverno (1 = sim, 0 = não). O teste de Hosmer-Lemeshow deu χ²(8) = 5.23, p = 0.73. Isso indica que:","opcoes":["O modelo é significativamente melhor que o acaso","O modelo se ajusta bem aos dados, pois não há diferença significativa entre frequências observadas e esperadas","O modelo deve ser rejeitado porque p > 0.05","Todos os preditores são significativos"],"resp":1},{"q":"Na tabela de classificação de um modelo logístico para prever vitória em combate (prevalência = 30%), o modelo acerta 92% dos casos. Porém, a sensibilidade é 40% e a especificidade é 95%. A melhor interpretação é:","opcoes":["O modelo é excelente pois acerta 92% dos casos","O modelo classifica bem as derrotas (maioria), mas identifica mal as vitórias — a acurácia global é inflada pela classe majoritária","A especificidade de 95% garante que o modelo é clinicamente útil","A sensibilidade de 40% é aceitável porque a prevalência é baixa"],"resp":1},{"q":"A curva ROC e a AUC (Area Under the Curve) na regressão logística medem:","opcoes":["A variância explicada pelo modelo","A capacidade discriminatória do modelo — a AUC varia de 0.5 (acaso) a 1.0 (discriminação perfeita) ao longo de todos os pontos de corte possíveis","A significância estatística de cada preditor","A calibração entre probabilidades previstas e observadas"],"resp":1},{"q":"Um modelo logístico para prever se um longship completa a travessia (1) ou naufraga (0) reporta: preditor 'carga' com B = −0.85, Wald = 12.4, p < 0.001, OR = 0.43, IC 95% [0.27, 0.67]. A interpretação do OR é:","opcoes":["A carga não afeta a travessia porque OR < 1","Para cada unidade adicional de carga, as odds de completar a travessia se reduzem em 57% (multiplicam-se por 0.43), com efeito significativo e IC que não inclui 1","As odds de naufragar se multiplicam por 0.43","O modelo prevê que 43% dos longships completam a travessia"],"resp":1},{"q":"O pseudo-R² de Nagelkerke em um modelo logístico para recrutamento de guerreiros é 0.35. A interpretação correta é:","opcoes":["O modelo explica exatamente 35% da variância da variável dependente, como na regressão linear","É uma aproximação da proporção de variância explicada, normalizada para variar de 0 a 1, mas não é diretamente comparável ao R² da regressão OLS — deve ser interpretada com cautela","O modelo é ruim porque R² < 0.50","35% dos casos foram classificados corretamente"],"resp":1},{"q":"Na regressão logística, a separação completa (complete separation) ocorre quando um preditor prevê perfeitamente o outcome. A consequência é:","opcoes":["O modelo se torna mais confiável e os coeficientes mais precisos","Os coeficientes estimados tendem ao infinito, os erros padrão explodem, e o algoritmo de máxima verossimilhança não converge adequadamente — soluções incluem Firth's penalized likelihood ou remoção/recodificação do preditor","O R² de Nagelkerke atinge exatamente 1.0 e o modelo é perfeito","O teste de Wald se torna o único indicador confiável de significância"],"resp":1},{"q":"No teorema de Bayes aplicado à inferência, a distribuição a priori (prior) representa:","opcoes":["A probabilidade dos dados dado o modelo","O conhecimento ou crença sobre o parâmetro ANTES de observar os dados atuais","A distribuição final após incorporar os dados","O valor p do teste frequentista equivalente"],"resp":1},{"q":"Na inferência bayesiana, a relação fundamental é: Posterior ∝ Prior × Likelihood. A 'likelihood' (verossimilhança) representa:","opcoes":["A probabilidade do parâmetro ser verdadeiro","A probabilidade de observar os dados dado um valor específico do parâmetro","A distribuição a priori atualizada","O intervalo de credibilidade do parâmetro"],"resp":1},{"q":"O intervalo de credibilidade bayesiano de 95% difere do intervalo de confiança frequentista de 95% porque:","opcoes":["Ambos têm exatamente a mesma interpretação probabilística","O IC bayesiano afirma que há 95% de probabilidade de o parâmetro estar naquele intervalo, dadas as priors e os dados — o IC frequentista refere-se ao procedimento de longo prazo","O IC bayesiano é sempre mais estreito","O IC frequentista é sempre mais informativo"],"resp":1},{"q":"O Fator de Bayes (BF₁₀) compara:","opcoes":["As médias de dois grupos","A verossimilhança dos dados sob H₁ em relação a H₀ — indica quão mais prováveis são os dados sob uma hipótese versus a outra","Os tamanhos de efeito de dois estudos","Os intervalos de credibilidade de duas análises"],"resp":1},{"q":"O oráculo de Mimir usa uma prior informativa (baseada em 200 batalhas anteriores) para estimar a taxa de sobrevivência dos guerreiros. Uma vantagem de priors informativas sobre priors vagas é:","opcoes":["Eliminam a necessidade de coletar novos dados","Incorporam conhecimento prévio legítimo, podendo produzir estimativas mais precisas especialmente com amostras pequenas — desde que a prior seja justificada","Garantem que a posterior será sempre normal","Tornam o Fator de Bayes sempre maior que 10"],"resp":1},{"q":"Um BF₁₀ = 0.15 na comparação entre dois métodos de forja de espadas significa que:","opcoes":["Forte evidência a favor de H₁","Os dados são aproximadamente 6.7 vezes mais prováveis sob H₀ do que sob H₁ (BF₀₁ ≈ 6.7), fornecendo evidência moderada a favor da hipótese nula","Não há evidência suficiente para nenhuma hipótese","O tamanho de efeito é 0.15"],"resp":1},{"q":"Uma vantagem central da abordagem bayesiana sobre a frequentista é que:","opcoes":["Não exige pressupostos sobre a distribuição dos dados","Permite quantificar evidência a favor de H₀ (não apenas 'falhar em rejeitar'), atualizar crenças com novos dados e incorporar conhecimento prévio formalmente","Sempre produz resultados significativos","Dispensa completamente a coleta de dados empíricos"],"resp":1},{"q":"Na ROPE (Region of Practical Equivalence), o pesquisador define um intervalo em torno de zero (e.g., [−0.1, 0.1] para Cohen's d). Se 97% do HDI (Highest Density Interval) da posterior cai dentro da ROPE, a conclusão é:","opcoes":["O efeito é estatisticamente significativo","Há forte evidência de que o efeito é praticamente equivalente a zero — aceita-se a hipótese nula prática","O Fator de Bayes é necessariamente maior que 10","A prior foi mal especificada"],"resp":1},{"q":"O Jarl de Uppsala conduz três expedições sequenciais, atualizando a estimativa bayesiana da taxa de sucesso de navegação após cada uma: prior → posterior₁ (após expedição 1) → posterior₂ (após expedição 2) → posterior₃. A propriedade bayesiana que torna isso coerente é:","opcoes":["A prior deve ser sempre não-informativa para garantir objetividade","A posterior de uma análise serve como prior para a próxima — a atualização sequencial converge para o mesmo resultado que analisar todos os dados de uma vez","Cada expedição exige uma prior completamente nova e independente","A verossimilhança acumulada substitui a posterior anterior"],"resp":1},{"q":"Um pesquisador obtém BF₁₀ = 45 usando uma prior Cauchy padrão (r = 0.707) para a diferença entre dois grupos de guerreiros. Ao mudar para uma prior mais ampla (r = 1.5), obtém BF₁₀ = 18. Ao usar prior estreita (r = 0.3), obtém BF₁₀ = 60. Essa variação ilustra:","opcoes":["Que a análise bayesiana é inválida porque os resultados mudam","A sensibilidade do Fator de Bayes à especificação da prior — recomenda-se conduzir análise de robustez (robustness check) reportando BF sob diferentes priors para verificar se a conclusão qualitativa se mantém","Que sempre se deve usar a prior que produz o maior BF","Que o BF é equivalente ao p-value e sofre os mesmos problemas"],"resp":1}];
+}
+
+async function iniciarJogo() {
+  const nome = document.getElementById("nome").value.trim();
+  const ra = document.getElementById("ra").value.trim();
+  const programa = document.getElementById("programa").value;
+  
+  if (!nome || !ra || !programa) {
+    alert("❌ Preencha todos os campos!");
+    return;
+  }
+  
+  sessionId = Date.now().toString();
+  respondente = {
+    nome: nome,
+    ra: ra,
+    programa: programa,
+    ip: "capturando...",
+    inicio: new Date().toLocaleTimeString(),
+    questoes: [],
+    respostas: [],
+    idx_atual: 0,
+    pular_usados: 3,
+    eliminar_usados: 3,
+    ajuda_usados: 3,
+    status: "respondendo"
+  };
+  
+  // Pega IP
+  fetch("https://api.ipify.org?format=json")
+    .then(r => r.json())
+    .then(d => { respondente.ip = d.ip; })
+    .catch(() => { respondente.ip = "desconhecido"; });
+  
+  // Sorteia 50 questões
+  questoesSorteadas = [];
+  const indices = [];
+  while (questoesSorteadas.length < 50 && indices.length < questoesBanco.length) {
+    const idx = Math.floor(Math.random() * questoesBanco.length);
+    if (!indices.includes(idx)) {
+      indices.push(idx);
+      questoesSorteadas.push(questoesBanco[idx]);
+    }
+  }
+  
+  respondente.questoes = questoesSorteadas;
+  
+  ocultar("telaLogin");
+  mostrar("telaJogo");
+  carregarQuestao();
+}
+
+function carregarQuestao() {
+  const idx = respondente.idx_atual;
+  
+  if (idx >= 50) {
+    finalizarJogo();
+    return;
+  }
+  
+  const q = respondente.questoes[idx];
+  
+  document.getElementById("statusQuestao").textContent = `Questão ${idx + 1} de 50`;
+  document.getElementById("questaoTexto").textContent = q.q;
+  document.getElementById("contPular").textContent = respondente.pular_usados;
+  document.getElementById("contEliminar").textContent = respondente.eliminar_usados;
+  document.getElementById("contAjuda").textContent = respondente.ajuda_usados;
+  
+  document.getElementById("btnPular").disabled = respondente.pular_usados <= 0;
+  document.getElementById("btnEliminar").disabled = respondente.eliminar_usados <= 0;
+  document.getElementById("btnAjuda").disabled = respondente.ajuda_usados <= 0;
+  
+  const opDiv = document.getElementById("opcoes");
+  opDiv.innerHTML = "";
+  eliminadas = [];
+  
+  for (let i = 0; i < q.opcoes.length; i++) {
+    const div = document.createElement("div");
+    div.className = "opcao";
+    div.textContent = ["A", "B", "C", "D"][i] + ") " + q.opcoes[i];
+    div.onclick = () => responder(i);
+    opDiv.appendChild(div);
+  }
+  
+  document.getElementById("resultadoArea").innerHTML = "";
+  document.getElementById("btnProximo").style.display = "none";
+  respondidaSessao = false;
+  tempoAtual = 60;
+  iniciarTimer();
+}
+
+function iniciarTimer() {
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    tempoAtual--;
+    const timerEl = document.getElementById("timer");
+    timerEl.textContent = tempoAtual;
+    if (tempoAtual <= 10) {
+      timerEl.classList.add("aviso");
+    } else {
+      timerEl.classList.remove("aviso");
+    }
+    if (tempoAtual <= 0) pular();
+  }, 1000);
+}
+
+function responder(opcao) {
+  if (respondidaSessao) return;
+  respondidaSessao = true;
+  clearInterval(timerInterval);
+  
+  const q = respondente.questoes[respondente.idx_atual];
+  const acertou = opcao === q.resp;
+  
+  respondente.respostas.push({
+    questao: q.q,
+    resposta: opcao,
+    correta: q.resp,
+    acertou: acertou
+  });
+  
+  const resultDiv = document.createElement("div");
+  resultDiv.className = "resultado " + (acertou ? "acerto" : "erro");
+  resultDiv.textContent = acertou ? "✅ ACERTOU!" : "❌ ERROU!";
+  document.getElementById("resultadoArea").innerHTML = resultDiv.innerHTML;
+  
+  document.getElementById("btnProximo").style.display = "block";
+}
+
+function pular() {
+  if (respondidaSessao && respondente.respostas.length === respondente.idx_atual + 1) return;
+  
+  clearInterval(timerInterval);
+  
+  if (respondente.pular_usados > 0) {
+    respondente.pular_usados--;
+    respondente.idx_atual++;
+    carregarQuestao();
+  }
+}
+
+function eliminar() {
+  const q = respondente.questoes[respondente.idx_atual];
+  const opcao_correta = q.resp;
+  
+  const incorretas = [0, 1, 2, 3].filter(i => i !== opcao_correta);
+  eliminadas = [];
+  
+  while (eliminadas.length < 2 && incorretas.length > 0) {
+    const idx = Math.floor(Math.random() * incorretas.length);
+    eliminadas.push(incorretas[idx]);
+    incorretas.splice(idx, 1);
+  }
+  
+  const opcoes = document.querySelectorAll(".opcao");
+  eliminadas.forEach(i => opcoes[i].classList.add("desabilitada"));
+  
+  respondente.eliminar_usados--;
+  document.getElementById("btnEliminar").disabled = true;
+}
+
+function ajuda() {
+  const q = respondente.questoes[respondente.idx_atual];
+  const opcao_correta = q.resp;
+  
+  const sabotado = Math.random() < 0.30;
+  let resposta;
+  
+  if (sabotado) {
+    const erradas = [0, 1, 2, 3].filter(i => i !== opcao_correta);
+    resposta = erradas[Math.floor(Math.random() * erradas.length)];
+  } else {
+    resposta = opcao_correta;
+  }
+  
+  const resultDiv = document.createElement("div");
+  resultDiv.className = "resultado " + (sabotado ? "sabotado" : "acerto");
+  resultDiv.textContent = (sabotado ? "⚠️ SABOTADO! " : "💡 ") + "Resposta sugerida: " + ["A", "B", "C", "D"][resposta];
+  document.getElementById("resultadoArea").innerHTML = resultDiv.innerHTML;
+  
+  respondente.ajuda_usados--;
+  document.getElementById("btnAjuda").disabled = true;
+}
+
+function proximaQuestao() {
+  respondente.idx_atual++;
+  carregarQuestao();
+}
+
+function registrarAbandono() {
+  const acertos = respondente.respostas.filter(r => r.acertou).length;
+  const nota = (acertos / 50) * 10;
+  
+  const payload = {
+    nome: respondente.nome,
+    ra: respondente.ra,
+    programa: respondente.programa,
+    ip: respondente.ip,
+    inicio: respondente.inicio,
+    acertos: acertos,
+    nota: nota.toFixed(2),
+    abandonado: true,
+    detalhes: respondente.respostas
+  };
+  
+  navigator.sendBeacon(WEBHOOK_URL, JSON.stringify(payload));
+}
+
+async function finalizarJogo() {
+  respondente.status = "finalizado";
+  clearInterval(timerInterval);
+  
+  const acertos = respondente.respostas.filter(r => r.acertou).length;
+  const nota = (acertos / 50) * 10;
+  
+  const payload = {
+    nome: respondente.nome,
+    ra: respondente.ra,
+    programa: respondente.programa,
+    ip: respondente.ip,
+    inicio: respondente.inicio,
+    acertos: acertos,
+    nota: nota.toFixed(2),
+    abandonado: false,
+    detalhes: respondente.respostas
+  };
+  
+  try {
+    await fetch(WEBHOOK_URL, {
+      method: "POST",
+      body: JSON.stringify(payload)
+    });
+  } catch (e) {
+    console.error("Erro ao enviar dados:", e);
+  }
+  
+  ocultar("telaJogo");
+  mostrar("telaFinal");
+  
+  document.getElementById("statusFinal").textContent = "✅ Respostas registradas na planilha!";
+  document.getElementById("textofinal").innerHTML = `
+    ${nota.toFixed(2)}<br>
+    <p style="font-size: 1em; margin-top: 10px;">Acertos: ${acertos} de 50 (${((acertos/50)*100).toFixed(1)}%)</p>
+  `;
+}
+
+// Função para baixar relatório
+function baixarRelatorio() {
+  let html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Relatório Sabotage Time - ${respondente.nome}</title>
+  <style>
+    body { font-family: Georgia, serif; background: #f5f5f5; padding: 20px; }
+    .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    h1 { color: #D4AF37; text-align: center; }
+    .header { background: #2d2d2d; color: #F5F1E8; padding: 15px; border-radius: 5px; margin: 20px 0; }
+    .header p { margin: 5px 0; }
+    .questao { margin: 20px 0; padding: 15px; border-left: 4px solid #D4AF37; background: #f9f9f9; }
+    .questao p { margin: 8px 0; }
+    .numero { font-weight: bold; color: #D4AF37; }
+    .correta { color: green; font-weight: bold; }
+    .errada { color: red; font-weight: bold; }
+    .resumo { text-align: center; font-size: 1.5em; margin: 30px 0; padding: 20px; background: #D4AF37; color: black; border-radius: 5px; }
+    .footer { text-align: center; color: #999; margin-top: 30px; font-size: 0.9em; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>⚔️ SABOTAGE TIME - RELATÓRIO</h1>
+    
+    <div class="header">
+      <p><strong>Aluno:</strong> ${respondente.nome}</p>
+      <p><strong>RA:</strong> ${respondente.ra}</p>
+      <p><strong>Programa:</strong> ${respondente.programa}</p>
+      <p><strong>Data:</strong> ${new Date().toLocaleString('pt-BR')}</p>
+    </div>
+    
+    <div class="resumo">
+      <div>NOTA: ${nota.toFixed(2)} / 10.0</div>
+      <div>ACERTOS: ${acertos} / 50 (${((acertos/50)*100).toFixed(1)}%)</div>
+    </div>
+  `;
+  
+  // Adiciona questão por questão
+  respondente.questoes.forEach((q, idx) => {
+    const respAluno = q.resposta_aluno !== null ? String.fromCharCode(65 + q.resposta_aluno) : "—";
+    const respCorreta = String.fromCharCode(65 + q.resposta_correta);
+    const acertou = q.resposta_aluno === q.resposta_correta;
+    
+    html += `
+    <div class="questao">
+      <p class="numero">Questão ${idx + 1}</p>
+      <p><strong>${q.texto}</strong></p>
+      <p><strong>Sua resposta:</strong> <span style="color: ${acertou ? 'green' : 'red'}">${respAluno}</span></p>
+      <p><strong>Resposta correta:</strong> <span class="correta">${respCorreta}</span></p>
+      <p><strong>Resultado:</strong> <span class="${acertou ? 'correta' : 'errada'}">${acertou ? '✓ CORRETO' : '✗ ERRADO'}</span></p>
+    </div>
+    `;
+  });
+  
+  html += `
+    <div class="footer">
+      <p>Relatório gerado automaticamente pelo Sabotage Time</p>
+      <p>© 2025 MTPQI - UNINOVE</p>
+    </div>
+  </div>
+</body>
+</html>
+  `;
+  
+  // Cria blob e faz download
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `Relatorio_${respondente.ra}_${respondente.nome.replace(/\s+/g, '_')}.html`;
+  document.body.appendChild(a);
+  a.click();
+  window.URL.revokeObjectURL(url);
+  document.body.removeChild(a);
+}
+
+// Carrega questões ao abrir
+carregarQuestoes();
+</script>
+
+</body>
+</html>
